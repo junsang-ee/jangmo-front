@@ -7,6 +7,9 @@ import * as directives from 'vuetify/directives'
 import {ko, en} from "vuetify/locale";
 
 const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi',
+  },
   components: {
     ...components,
     ...labsComponents

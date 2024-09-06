@@ -2,19 +2,49 @@
   <v-app>
     <Header />
     <v-main>
-      <Dashboard />
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import Header from './components/Header.vue';
-import Dashboard from './components/Dashboard.vue';
+import Header from '@/components/Header.vue';
+import { useRouter } from 'vue-router';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const router = useRouter();
+const isMobile = ref(false);
+
+const navigate = (routeName) => {
+  router.push({ name: routeName });
+};
+
+onMounted(() => {
+  const handleResize = () => {
+    isMobile.value = window.innerWidth <= 768;
+  };
+  window.addEventListener('resize', handleResize);
+  handleResize();
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+  });
+});
+
 </script>
 
-<style>
-/* 전역 스타일 설정 */
-#app {
-  font-family: 'Roboto', sans-serif;
+<style scope>
+
+.v-main {
+  padding-top: 64px;
 }
+
+@media (max-width: 768px) {
+  .v-main {
+    padding: 16px;
+  }
+}
+
 </style>
