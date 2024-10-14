@@ -6,46 +6,40 @@
       <v-icon>mdi-home</v-icon>
     </v-btn>
     
-    <v-btn v-if="!isMenuVisible" icon @click="navigate('UserDetail')">
-      <v-icon>mdi-account</v-icon>
-    </v-btn>
-    <v-btn v-else icon @click="openMenu">
+    <v-btn icon v-if="isMobile && isUserDetailPage" @click="handleToggleMenu">
       <v-icon>mdi-menu</v-icon>
+    </v-btn>
+    <v-btn v-else @click="navigate('UserDetail')">
+      <v-icon>mdi-account</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useNavigationStore } from "@/store/navigation";
 
 const router = useRouter();
 const route = useRoute();
-const isMenuVisible = ref(false);
 const isMobile = ref(false);
+const isUserDetailPage = ref(false);
+const $navigation = useNavigationStore();
+
+const handleToggleMenu = () => {
+  $navigation.toggleMenu();
+};
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 768;
 };
 
-watch(
-  () => route.name,
-  (newRouteName) => {
-    if (newRouteName === 'UserDetail' && isMobile.value) {
-      isMenuVisible.value = true;
-    } else {
-      isMenuVisible.value = false;
-    }
-  },
-  { immediate: true }
-);
+watch(() => route.name, (routeName) => {
+  isUserDetailPage.value = routeName === 'UserDetail';
+}, { immediate: true });
 
 const navigate = (component) => {
   router.push({ name: component });
-}
-
-const openMenu = () => {
-  console.log('Mobile menu opened');
 };
 
 onMounted(() => {
@@ -56,7 +50,6 @@ onMounted(() => {
     window.removeEventListener('resize', handleResize);
   });
 });
-
 </script>
   
 <style scoped>

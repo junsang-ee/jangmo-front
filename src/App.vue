@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <Header />
+    <NavigationDrawer v-show="menuVisible" />
     <v-main>
       <v-container fluid>
         <router-view />
@@ -12,6 +13,12 @@
 <script setup>
 
 import Header from '@/components/Header.vue';
+import NavigationDrawer from '@/components/NavigationDrawer.vue';
+import { useNavigationStore } from "@/store/navigation";
+import { storeToRefs } from 'pinia';
+
+const $navigation = useNavigationStore();
+const { menuVisible } = storeToRefs($navigation); 
 
 </script>
 

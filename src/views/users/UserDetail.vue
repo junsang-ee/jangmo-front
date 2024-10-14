@@ -1,13 +1,10 @@
 <template>
   <v-container fluid>
     <v-row>
-
       <v-col v-if="!isMobile" cols="3">
         <v-list>
           <v-list-item class="category-title">
-            <v-list-item-content>
-              <v-list-item-title>내 계정</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title>내 계정</v-list-item-title>
           </v-list-item>
 
           <v-list-item
@@ -21,19 +18,22 @@
               active: selectedCategory === item
             }"
           >
-            <v-list-item-content>
-              <v-list-item-title class="list-item">{{ item }}</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="list-item">{{ item }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-col>
-
-      <v-navigation-drawer v-if="isMobile" v-model="menuVisible" right temporary>
+      
+      <v-navigation-drawer 
+        v-if="isMobile" 
+        v-model="menuVisible" 
+        :menu-visible="menuVisible"
+        right 
+        temporary 
+        app
+      >
         <v-list>
           <v-list-item class="category-title">
-            <v-list-item-content>
-              <v-list-item-title>내 계정</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title>내 계정</v-list-item-title>
           </v-list-item>
 
           <v-list-item
@@ -47,31 +47,28 @@
               active: selectedCategory === item
             }"
           >
-            <v-list-item-content>
-              <v-list-item-title class="list-item">{{ item }}</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="list-item">{{ item }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
 
       <v-col :cols="isMobile ? 12 : 9">
         <h2>{{ selectedCategory }} 페이지</h2>
-
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 
-const categories = ['계정관리', '스케쥴관리'];
-const selectedCategory = ref('계정관리');
-const isMobile = ref(false);
+const categories = ["계정관리", "스케쥴관리", "로그아웃"];
+const selectedCategory = ref("계정관리");
+const isMobile = ref(window.innerWidth <= 768);
 const menuVisible = ref(false);
 const hoveredCategory = ref(null);
 
@@ -79,23 +76,29 @@ const handleResize = () => {
   isMobile.value = window.innerWidth <= 768;
 };
 
-window.addEventListener('resize', handleResize);
-
 const selectCategory = (category) => {
   selectedCategory.value = category;
-  if (isMobile.value) {
-    menuVisible.value = false;
-  }
-}
-
-watch(
-  () => route.name,
-  (newRouteName) => {
-    if (newRouteName === 'UserDetail') {
+  if (category === "로그아웃") {
+    if (confirm("로그아웃 하시겠습니까?")) {
+      router.replace("Login");
     }
   }
-);
+  if (!isMobile.value) {
+    menuVisible.value = false;
+  }
+};
 
+watch(() => menuVisible.value, (newVal) => {
+  menuVisible.value = newVal;
+});
+
+onMounted(() => {
+  window.addEventListener("resize", handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
 
 </script>
 
