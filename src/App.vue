@@ -16,10 +16,28 @@ import Header from '@/components/Header.vue';
 import NavigationDrawer from '@/components/NavigationDrawer.vue';
 import { useNavigationStore } from "@/store/navigation";
 import { storeToRefs } from 'pinia';
+import { useRouter} from "vue-router";
 
 const $navigation = useNavigationStore();
 const { menuVisible } = storeToRefs($navigation); 
+const router = useRouter();
 
+router.beforeEach((to, from, next) => {
+  document.title = "JangmoFC";
+  if (to?.name?.startsWith("Login")) {
+    next();
+  } else {
+    try {
+      next();
+    } catch(toPath) {
+      if (from.name === "Login") {
+        next(false);
+      } else {
+        next({name: toPath});
+      }
+    }
+  }
+})
 </script>
 
 <style scope>

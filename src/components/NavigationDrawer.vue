@@ -50,9 +50,13 @@ window.addEventListener('resize', () => {
 
 const selectCategory = (category) => {
   selectedCategory.value = category;
-  if (category === '계정관리')
+  if (category === "계정관리") {
     router.replace("Login");
-  else alert("스케쥴관리");
+  } else if (category === "로그아웃") {
+    if (confirm("로그아웃 하시겠습니까?")) {
+      router.replace("Login");
+    }
+  } else alert("스케쥴관리");
   closeMenu();
 };
 
