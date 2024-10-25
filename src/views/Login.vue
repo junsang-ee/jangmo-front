@@ -34,6 +34,7 @@
             </div>
           </v-form>
         </div>
+        <SignupEditPop v-if="isShowSignup" @close="hideSignup"/>
       </v-col>
     </v-row>
   </v-container>
@@ -41,6 +42,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import SignupEditPop from '@/views/users/pop/SignupEditPop.vue';
 
 const phoneNumber = ref("");
 const password = ref("");
@@ -48,6 +50,10 @@ const isShowSignup = ref(false);
 
 const login = () => {
   alert("login");
+}
+
+const hideSignup = () => {
+  isShowSignup.value = false;
 }
 
 const showSignup = () => {
