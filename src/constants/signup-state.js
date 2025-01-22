@@ -7,5 +7,5 @@ export const SignupState = {
 export const SignupMessage = {
     [SignupState.ENTER_MOBILE]: '인증번호 발송',
     [SignupState.ENTER_CODE]: '인증번호 확인',
-    [SignupState.ENTER_DETAIL]: '회원가입 완료',
+    [SignupState.ENTER_DETAIL]: '회원가입 요청',
 };

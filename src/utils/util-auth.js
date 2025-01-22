@@ -1,8 +1,8 @@
-import jwtDecoder from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const tokenValidator = (token) => {
     if (token) {
-      let decodedToken = jwtDecoder(token);
+      let decodedToken = jwtDecode(token);
       let expireAt = new Date(0);
       expireAt.setUTCSeconds(decodedToken.exp);
       if (Date.now() < expireAt) {

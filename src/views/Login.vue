@@ -6,27 +6,43 @@
           <v-card-title class="text-h5 text-center mb-4">
             로그인
           </v-card-title>
-          <v-form>
-            <v-text-field
-                v-model="phoneNumber"
+          <v-form fast-fail ref="isValid">
+            <div class="login-wrap">
+              <v-text-field
+                v-model="mobile"
                 label="휴대폰 번호"
+                placeholder="휴대폰 번호 11자리('-' 제외)"
                 type="tel"
                 :rules="mobileRule"
                 required
                 outlined
-                class="phone-number-field"
-            />
-            <v-text-field
-                v-if="isShowVerifyInput"
-                v-model="password"
-                label="비밀번호"
-                type="password"
-                required
-                outlined
-                class="password-field"
-            />
+                class="mobile-field"
+              />
+              <div v-if="isShowVerifyInput">
+                <v-text-field 
+                  v-if="isLoginMember"
+                  v-model="password"
+                  label="비밀번호"
+                  placeholder="비밀번호"
+                  type="password"
+                  required
+                  outlined
+                  class="password-field"
+                />
+                <v-text-field
+                  v-else
+                  v-model="mercenaryCode"
+                  label="용병코드"
+                  placeholder="용병코드"
+                  type="text"
+                  required
+                  outlined
+                  class="mercenary-code-field"
+                />
+              </div>
+            </div>
 
-            <v-btn color="primary" class="mt-4" block @click="showVerifyInput">
+            <v-btn color="primary" class="mt-4" block @click="executeButtonAction">
                 <span>{{ buttonText }}</span>
             </v-btn>
 
@@ -40,73 +56,125 @@
             </div>
             <div class="text-center mt-4">
                 Jangmo 회원이 아니신가요? 
-              <span class="signup-link" @click="showSignup">
+              <span class="signup-link" @click="showSignup('MEMBER')">
                 회원 가입
               </span>
             </div>
-            <div class="text-center signup-link">
-              <span>
+            <div class="text-center mt-4">
+              Jangmo 용병 등록을 원한다면?
+              <span class="signup-link" @click="showSignup('MERCENARY')">
                 용병 등록 요청
               </span>
             </div>
           </v-form>
         </div>
-        <SignupEditPop v-if="isShowSignup" @close="hideSignup"/>
+        <SignupEditPop v-if="isShowSignup" @close="hideSignup" :signupType="signupType"/>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useRouter } from "vue-router";
+import { read, write } from "@/utils/util-axios.js";
+import { tokenValidator } from "@/utils/util-auth";
+import { useTokenStore } from "@/store/auth";
 import SignupEditPop from '@/views/users/pop/SignupEditPop.vue';
 
-const phoneNumber = ref("");
+const router = useRouter();
+const $token = useTokenStore();
+const mobile = ref("");
 const password = ref("");
 const isShowSignup = ref(false);
 const isShowVerifyInput = ref(false);
-
-const isShowMercenaryCode = ref(false);
-const buttonText = ref("회원으로 시작하기");
+const mercenaryCode = ref("");
+const isValid = ref(null);
 const isLoginMember = ref(true);
+const signupType = ref("MEMBER");
 const mobileRuleConfig = /^010\d{8}$/;
+const buttonText = computed(() => {
+  if (isShowVerifyInput.value) {
+    if (isLoginMember.value) 
+      return "회원으로 로그인";
+    else 
+      return "용병으로 로그인";
+  } else {
+    return "휴대폰 번호로 시작하기";
+  }
+});
 
 const mobileRule = [
-  v => mobileRuleConfig.test(v) || "휴대폰 번호는 11자리의 숫자여야만 합니다."
+  v => mobileRuleConfig.test(v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
-
-const login = () => {
-  alert("login");
-}
 
 const hideSignup = () => {
   isShowSignup.value = false;
 }
 
-const showSignup = () => {
+const showSignup = (type) => {
   isShowSignup.value = true;
+  signupType.value = type;
 }
 
-const showVerifyInput = () => {
-  isShowVerifyInput.value = true;
+const executeButtonAction = () => {
+  if (!isShowVerifyInput.value) {
+    isShowVerifyInput.value = true;
+  } else {
+    if (isLoginMember.value)
+      memberLogin();
+    else 
+      mercenaryLogin();
+  }
+  
 }
 
 const convertLoginType = (type) => {
-  if(type === "member") {
+  if (type === "member") {
     isLoginMember.value = true;
-  } else isLoginMember.value = false;
+  } else {
+    isLoginMember.value = false;
+  }
 }
 
-const showCodeInput = () => {
-  isShowMercenaryCode.value = true;
+const memberLogin = async() => {
+  const {valid} = await isValid.value.validate();
+  try {
+    if (valid) {
+      const result = await write("/api/auth/login/member", null, {
+        mobile: mobile.value,
+        password: password.value
+      });
+      const token = tokenValidator(result.data?.data?.jwt);
+      $token.setToken(token);
+      alert("회원 권한으로 정상 로그인 되었습니다.");
+      router.replace({name: "Dashboard"});
+    }
+
+  } catch(e) {
+    alert(e.message);
+  }
+}
+
+const mercenaryLogin = async() => {
+  try {
+    await write("/api/auth/login/mercenary", null, {
+      mobile: mobile.value,
+      code: mercenaryCode.value
+    });
+    alert("용병 권한으로 정상 로그인 되었습니다.");
+  } catch(e) {
+    alert(e.message);
+  }
 }
 
 </script>
 
 <style scoped>
 
-.phone-number-field,
-.password-field {
+.mobile-field,
+.password-field,
+.mercenary-code-field {
     width: 100%;
     margin-left: auto;
     margin-right: auto;

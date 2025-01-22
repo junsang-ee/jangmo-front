@@ -64,7 +64,6 @@ const vueAxios = {
         return Promise.reject(error);
       }
     );
-
     vue.$axios = $axios;
   },
 };
