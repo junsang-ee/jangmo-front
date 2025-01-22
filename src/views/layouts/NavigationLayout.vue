@@ -33,9 +33,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useNavigationStore } from "@/store/navigation";
+import { useTokenStore } from "@/store/auth";
+import { useUserInfoStore } from "@/store/user";
 import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const $auth = useTokenStore();
+const $userInfo = useUserInfoStore();
 const categories = ["계정관리", "스케쥴관리", "로그아웃"];
 const selectedCategory = ref("계정관리");
 const hoveredCategory = ref(null);
@@ -54,11 +58,17 @@ const selectCategory = (category) => {
     router.replace("Login");
   } else if (category === "로그아웃") {
     if (confirm("로그아웃 하시겠습니까?")) {
-      router.replace("Login");
+      reset();
+      router.replace({name:"Login"});
     }
   } else alert("스케쥴관리");
   closeMenu();
 };
+
+const reset = async() => {
+  await $auth.reset();
+  await $userInfo.reset();
+}
 
 const closeMenu = () => {
   $navigation.closeMenu();

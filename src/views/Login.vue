@@ -80,10 +80,12 @@ import { useRouter } from "vue-router";
 import { read, write } from "@/utils/util-axios.js";
 import { tokenValidator } from "@/utils/util-auth";
 import { useTokenStore } from "@/store/auth";
+import { useUserInfoStore } from "@/store/user";
 import SignupEditPop from '@/views/users/pop/SignupEditPop.vue';
 
 const router = useRouter();
 const $token = useTokenStore();
+const $userInfo = useUserInfoStore();
 const mobile = ref("");
 const password = ref("");
 const isShowSignup = ref(false);
@@ -141,31 +143,45 @@ const memberLogin = async() => {
   const {valid} = await isValid.value.validate();
   try {
     if (valid) {
-      const result = await write("/api/auth/login/member", null, {
+      const url = "/api/auth/login/member";
+      const login = {
         mobile: mobile.value,
         password: password.value
-      });
-      const token = tokenValidator(result.data?.data?.jwt);
-      $token.setToken(token);
+      };
+      const result = await write(url, null, login);
+      setUserDetail(result);
       alert("회원 권한으로 정상 로그인 되었습니다.");
       router.replace({name: "Dashboard"});
     }
-
   } catch(e) {
     alert(e.message);
   }
 }
 
 const mercenaryLogin = async() => {
+  const {valid} = await isValid.value.validate();
   try {
-    await write("/api/auth/login/mercenary", null, {
-      mobile: mobile.value,
-      code: mercenaryCode.value
-    });
-    alert("용병 권한으로 정상 로그인 되었습니다.");
+    if (valid) {
+      const url = "/api/auth/login/mercenary";
+      const login = {
+        mobile: mobile.value,
+        code: mercenaryCode.value
+      };
+      const result = await write(url, null, login);
+      setUserDetail(result);
+      alert("용병 권한으로 정상 로그인 되었습니다.");
+      router.replace({name: "Dashboard"});
+    }
   } catch(e) {
     alert(e.message);
   }
+}
+
+const setUserDetail = async(result) => {
+  const token = tokenValidator(result.data?.data?.jwt);
+  $token.setToken(token);
+  const myInfo = await read("/api/user/me");
+  $userInfo.setInfo(myInfo.data.data);
 }
 
 </script>

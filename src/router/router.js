@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import UserDetail from "@/views/users/UserDetail.vue"
 import Login from "@/views/Login.vue"
-import Dashboard from "@/components/Dashboard.vue"
+import Dashboard from "@/views/components/Dashboard.vue"
 import NotFound from "@/views/pages/error/NotFound.vue"
 import InternalServer from "@/views/pages/error/InternalServer.vue"
 

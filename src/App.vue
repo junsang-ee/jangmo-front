@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <Header />
-    <NavigationDrawer v-show="menuVisible" />
+    <HeaderLayout />
+    <NavigationLayout v-show="menuVisible" />
     <v-main>
       <v-container fluid>
         <router-view />
@@ -12,12 +12,17 @@
 
 <script setup>
 
-import Header from '@/components/Header.vue';
-import NavigationDrawer from '@/components/NavigationDrawer.vue';
+import HeaderLayout from '@/views/layouts/HeaderLayout.vue';
+import NavigationLayout from '@/views/layouts/NavigationLayout.vue';
 import { useNavigationStore } from "@/store/navigation";
+import { useTokenStore } from "@/store/auth";
+import { useUserInfoStore } from "@/store/user";
+import { tokenValidator } from "@/utils/util-auth";
 import { storeToRefs } from 'pinia';
 import { useRouter} from "vue-router";
 
+const $auth = useTokenStore();
+const $userInfo = useUserInfoStore();
 const $navigation = useNavigationStore();
 const { menuVisible } = storeToRefs($navigation); 
 const router = useRouter();
@@ -25,10 +30,14 @@ const router = useRouter();
 router.beforeEach((to, from, next) => {
   document.title = "JangmoFC";
   if (to?.name?.startsWith("Login")) {
+    $auth.reset()
+    $userInfo.reset();
     next();
   } else {
     try {
-      next();
+      if (tokenValidator($auth.getToken())) {
+        next();
+      }
     } catch(toPath) {
       if (from.name === "Login") {
         next(false);

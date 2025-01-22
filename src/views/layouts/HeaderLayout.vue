@@ -1,30 +1,37 @@
 <template>
   <v-app-bar app color="#8c9eff" dark>
     <v-toolbar-title class="logo" @click="navigate('Dashboard')">JangmoFC</v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-btn icon @click="navigate('Dashboard')">
-      <v-icon>mdi-home</v-icon>
-    </v-btn>
-    
-    <v-btn icon v-if="isMobile && isUserDetailPage" @click="handleToggleMenu">
-      <v-icon>mdi-menu</v-icon>
-    </v-btn>
-    <v-btn v-else @click="navigate('UserDetail')">
-      <v-icon>mdi-account</v-icon>
-    </v-btn>
+    <div v-if="!isLoggedOut()">
+      <v-spacer></v-spacer>
+      <v-btn icon @click="navigate('Dashboard')">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-btn icon v-if="isMobile && isUserDetailPage" @click="handleToggleMenu">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+      <v-btn v-else @click="navigate('UserDetail')">
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
+    </div>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useNavigationStore } from "@/store/navigation";
+import { useTokenStore } from "@/store/auth";
+import { useUserInfoStore } from "@/store/user";
 
 const router = useRouter();
 const route = useRoute();
+const $auth = useTokenStore();
+const $userInfo = useUserInfoStore();
 const isMobile = ref(false);
 const isUserDetailPage = ref(false);
 const $navigation = useNavigationStore();
+
+const isLoggedOut = () => $auth.isNullable() && $userInfo.isNullable();
 
 const handleToggleMenu = () => {
   $navigation.toggleMenu();
@@ -42,7 +49,7 @@ const navigate = (component) => {
   router.push({ name: component });
 };
 
-onMounted(() => {
+onMounted(async () => {
   handleResize();
   window.addEventListener('resize', handleResize);
 
@@ -51,7 +58,7 @@ onMounted(() => {
   });
 });
 </script>
-  
+
 <style scoped>
 .v-app-bar {
   z-index: 1000;
@@ -60,5 +67,4 @@ onMounted(() => {
 .logo {
   cursor: pointer;
 }
-
 </style>
