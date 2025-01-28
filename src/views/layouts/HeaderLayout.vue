@@ -6,10 +6,10 @@
       <v-btn icon @click="navigate('Dashboard')">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <v-btn icon v-if="isMobile && isUserDetailPage" @click="handleToggleMenu">
+      <v-btn icon v-if="isMobile" @click="handleToggleMenu">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-btn v-else @click="navigate('UserDetail')">
+      <v-btn v-else @click="handleToggleMenu">
         <v-icon>mdi-account</v-icon>
       </v-btn>
     </div>
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
@@ -28,7 +28,7 @@ const route = useRoute();
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const isMobile = ref(false);
-const isUserDetailPage = ref(false);
+const isUserInfoPage = ref(false);
 const $navigation = useNavigationStore();
 
 const isLoggedOut = () => $auth.isNullable() && $userInfo.isNullable();
@@ -42,10 +42,15 @@ const handleResize = () => {
 };
 
 watch(() => route.name, (routeName) => {
-  isUserDetailPage.value = routeName === 'UserDetail';
+  isUserInfoPage.value = routeName === 'UserInfo';
 }, { immediate: true });
 
 const navigate = (component) => {
+  if (component === "Dashboard") {
+    console.log("dashboard!!!!");
+    $navigation.closeMenu();
+  }
+    
   router.push({ name: component });
 };
 

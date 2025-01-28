@@ -55,7 +55,7 @@ const vueAxios = {
               break;
             case 500:
               alert("데이터 처리 중 문제가 발생하였습니다.");
-              router.back();
+              router.replace({name: "InternalServer"})
               break;
             default:
               break;
