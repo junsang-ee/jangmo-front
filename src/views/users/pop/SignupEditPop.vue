@@ -133,6 +133,7 @@
                 <v-select
                   v-model="selectedCity"
                   :items="cities"
+                  :rules="cityRule"
                   item-title="name"
                   item-value="cityId"
                   placeholder="시/도"
@@ -145,6 +146,7 @@
                 <v-select
                   v-model="selectedDistrict"
                   :items="districts"
+                  :rules="districtRule"
                   item-title="name"
                   item-value="districtId"
                   placeholder="시/군/구"
@@ -219,10 +221,8 @@
 import { computed, ref, watch, defineEmits, defineProps, onMounted } from 'vue';
 import { read, write } from "@/utils/util-axios.js";
 import { SignupState, SignupMessage } from "@/constants/signup-state.js";
-import { useRouter, useRoute } from "vue-router";
+import { valid } from "@/utils/util-regex";
 
-
-const router = useRouter();
 const dialog = ref(true);
 const mobile = ref("");
 const verificationCode = ref("");
@@ -260,36 +260,37 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const nameRuleConfig = /^[가-힣]{2,}$/;
-const codeRuleConfig = /^\d{6}$/;
-const mobileRuleConfig = /^010\d{8}$/;
-const passwordRuleConfig = 
-  /^(?!((?:[A-Za-z]+)|(?:[~!@#$%^&*()_+=]+)|(?:[0-9]+))$)[A-Za-z\d~!@#$%^&*()_+=]{8,}$/;
-const birthRuleConfig = /^\d{8}$/;
-
 const nameRule = [
-  v => nameRuleConfig.test(v) || "이름은 2글자 이상의 한글로 입력해주세요."
+  v => valid("NAME", v) || "이름은 2글자 이상의 한글로 입력해주세요."
 ]
 
 const codeRule = [
-  v => codeRuleConfig.test(v) || "인증코드는 6자리 숫자로 입력해주세요."
+  v => valid("VALID_CODE", v) || "인증코드는 6자리 숫자로 입력해주세요."
 ];
 
 const mobileRule = [
-  v => mobileRuleConfig.test(v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
+  v => valid("MOBILE", v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
 const genderRule = [
   v => !!v || "성별을 선택해주세요."
 ];
 
+const cityRule = [
+  v => !!v || "시/도를 선택해주세요."
+];
+
+const districtRule = [
+  v => !!v || "시/군/구를 선택해주세요."
+];
+
 const birthRule = [
-  v => birthRuleConfig.test(v) || "생년월일은 8자리의 숫자로 입력해주세요.",
+  v => valid("BIRTH", v) || "생년월일은 8자리의 숫자로 입력해주세요.",
   v => validateDate(v) || "유효하지 않은 날짜입니다."
 ];
 
 const passwordRule = [
-  v => passwordRuleConfig.test(v) || 
+  v => valid("PASSWORD", v) || 
     "▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상"
 ];
 
@@ -369,7 +370,7 @@ const agreementTexts = {
 };
 
 const isValidCode = computed(() => {
-  return codeRuleConfig.test(verificationCode.value);
+  return valid("VALID_CODE", verificationCode.value);
 })
 
 const isFormValid = computed(() => {
