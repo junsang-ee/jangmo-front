@@ -1,6 +1,11 @@
 <template>
   <v-app-bar app color="#8c9eff" dark>
-    <v-toolbar-title class="logo" @click="navigate('Dashboard')">JangmoFC</v-toolbar-title>
+    <v-toolbar-title 
+      :class="{ logo: !isLoggedOut()}"
+      @click="navigate('Dashboard')"
+    >
+      <span>JangmoFC</span>
+    </v-toolbar-title>
     <div v-if="!isLoggedOut()">
       <v-spacer></v-spacer>
       <v-btn icon @click="navigate('Dashboard')">
@@ -47,6 +52,7 @@ watch(() => route.name, (routeName) => {
 }, { immediate: true });
 
 const navigate = (component) => {
+  if (isLoggedOut) return;
   if (component === "Dashboard") {
     $navigation.closeMenu();
   }
