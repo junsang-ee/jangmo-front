@@ -42,7 +42,7 @@ const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const categories = [
   { name: "계정관리", component: "UserDetail" },
-  { name: "스케쥴관리", component: "Test" },
+  { name: "스케쥴관리", component: "NotFound" },
   { name: "로그아웃", component: "Login" }
 ];
 const selectedCategory = ref("계정관리");
@@ -61,11 +61,10 @@ const selectCategory = (component) => {
     if (confirm("로그아웃 하시겠습니까?")) {
       $auth.reset();
       $userInfo.reset();
-      router.replace({name:"Login"});
-    }
-    return;
+    } else return;
+  } else {
+    selectedCategory.value = component;
   }
-  selectedCategory.value = component;
   closeMenu();
   router.push({name: component})
 };

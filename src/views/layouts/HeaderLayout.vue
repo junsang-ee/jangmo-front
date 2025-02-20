@@ -6,11 +6,9 @@
       <v-btn icon @click="navigate('Dashboard')">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <v-btn icon v-if="isMobile" @click="handleToggleMenu">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-      <v-btn v-else @click="handleToggleMenu">
-        <v-icon>mdi-account</v-icon>
+      <v-btn icon @click="handleToggleMenu">
+        <v-icon v-if="isMobile">mdi-menu</v-icon>
+        <v-icon v-else>mdi-account</v-icon>
       </v-btn>
     </div>
   </v-app-bar>
