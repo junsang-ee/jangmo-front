@@ -46,7 +46,7 @@ const handleResize = () => {
 };
 
 const navigate = (component) => {
-  if (isLoggedOut) return;
+  if (isLoggedOut()) return;
   if (component === "Dashboard") {
     $navigation.closeMenu();
   }

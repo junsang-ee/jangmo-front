@@ -1,12 +1,11 @@
 <template>
-  <v-navigation-drawer 
-    v-if="isMobile"
-    :model-value="menuVisible"
-    @update:model-value="menuVisible = $event"
-    right 
-    temporary 
-    app
-  >
+    <v-navigation-drawer 
+      v-show="isMobile"
+      v-model="menuVisible"
+      right 
+      temporary 
+      app
+    >
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
@@ -30,14 +29,16 @@
 </template>
   
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { storeToRefs } from "pinia";
   
 const router = useRouter();
+const route = useRoute();
+
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const categories = [
@@ -45,7 +46,7 @@ const categories = [
   { name: "스케쥴관리", component: "NotFound" },
   { name: "로그아웃", component: "Login" }
 ];
-const selectedCategory = ref("계정관리");
+const selectedCategory = ref("");
 const hoveredCategory = ref(null);
 const isMobile = ref(window.innerWidth <= 768);
 
@@ -55,7 +56,11 @@ const { menuVisible } = storeToRefs($navigation);
 window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth <= 768;
 });
-  
+
+const resetCategory = () => {
+  selectedCategory.value = "";
+  hoveredCategory.value = null;
+}
 const selectCategory = (component) => {
   if (component === "Login") {
     if (confirm("로그아웃 하시겠습니까?")) {
@@ -72,7 +77,11 @@ const selectCategory = (component) => {
 const closeMenu = () => {
   $navigation.closeMenu();
 }
-  
+
+watch(() => route.name, (routeName) => {
+  if (routeName === "Dashboard")
+    resetCategory();
+}, {immediate : true});
 </script>
   
 <style scoped>
