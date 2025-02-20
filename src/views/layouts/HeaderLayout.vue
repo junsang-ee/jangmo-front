@@ -20,19 +20,17 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 
 const router = useRouter();
-const route = useRoute();
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
-const isMobile = ref(false);
-const isUserInfoPage = ref(false);
 const $navigation = useNavigationStore();
+const isMobile = ref(false);
 
 const isLoggedOut = () => $auth.isNullable() && $userInfo.isNullable();
 
@@ -46,10 +44,6 @@ const handleToggleMenu = () => {
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 768;
 };
-
-watch(() => route.name, (routeName) => {
-  isUserInfoPage.value = routeName === 'UserInfo';
-}, { immediate: true });
 
 const navigate = (component) => {
   if (isLoggedOut) return;
