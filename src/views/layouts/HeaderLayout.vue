@@ -34,6 +34,9 @@ const $navigation = useNavigationStore();
 const isLoggedOut = () => $auth.isNullable() && $userInfo.isNullable();
 
 const handleToggleMenu = () => {
+  if ($navigation.getMenuVisible() && !isMobile.value)
+    return;
+
   $navigation.toggleMenu();
 };
 
@@ -47,10 +50,8 @@ watch(() => route.name, (routeName) => {
 
 const navigate = (component) => {
   if (component === "Dashboard") {
-    console.log("dashboard!!!!");
     $navigation.closeMenu();
   }
-    
   router.push({ name: component });
 };
 
