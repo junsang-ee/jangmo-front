@@ -65,22 +65,17 @@ onMounted(() => {
   window.addEventListener('resize', handleResize);
 });
 
-// onBeforeUnmount(() => {
-//   // 컴포넌트 언마운트 시 이벤트 리스너 제거
-//   window.removeEventListener('resize', handleResize);
-// });
-
 </script>
 
 <style scope>
 
 .main-container {
-  padding-top: 64px; /* HeaderLayout의 높이에 맞추어 상단 패딩 */
+  padding-top: 64px;
 }
 
 @media (max-width: 768px) {
   .main-container {
-    padding-top: 56px; /* 모바일에서는 더 작은 헤더를 가정 */
+    padding-top: 56px
   }
 }
 
