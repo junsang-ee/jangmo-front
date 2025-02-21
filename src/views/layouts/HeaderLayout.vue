@@ -35,9 +35,10 @@ const isMobile = ref(false);
 const isLoggedOut = () => $auth.isNullable() && $userInfo.isNullable();
 
 const handleToggleMenu = () => {
-  if ($navigation.getMenuVisible() && !isMobile.value)
+  if ($navigation.getMenuVisible() && !isMobile.value) {
     return;
-
+  }
+    
   $navigation.toggleMenu();
 };
 

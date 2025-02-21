@@ -81,7 +81,7 @@ import { read, write } from "@/utils/util-axios.js";
 import { tokenValidator } from "@/utils/util-auth";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
-import SignupEditPop from '@/views/users/pop/SignupEditPop.vue';
+import SignupEditPop from '@/views/pages/users/pop/SignupEditPop.vue';
 
 const router = useRouter();
 const $token = useTokenStore();

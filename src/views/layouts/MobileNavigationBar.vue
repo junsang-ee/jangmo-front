@@ -1,6 +1,6 @@
 <template>
     <v-navigation-drawer 
-      v-show="isMobile"
+      v-if="isMobile"
       v-model="menuVisible"
       right 
       temporary 
