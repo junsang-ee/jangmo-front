@@ -34,7 +34,7 @@
                   v-model="mercenaryCode"
                   label="용병코드"
                   placeholder="용병코드"
-                  type="text"
+                  type="password"
                   required
                   outlined
                   class="mercenary-code-field"
@@ -95,6 +95,7 @@ const isValid = ref(null);
 const isLoginMember = ref(true);
 const signupType = ref("MEMBER");
 const mobileRuleConfig = /^010\d{8}$/;
+
 const buttonText = computed(() => {
   if (isShowVerifyInput.value) {
     if (isLoginMember.value) 
@@ -122,16 +123,16 @@ const showSignup = (type) => {
 const executeButtonAction = () => {
   if (!isShowVerifyInput.value) {
     isShowVerifyInput.value = true;
-  } else {
-    if (isLoginMember.value)
-      memberLogin();
-    else 
-      mercenaryLogin();
-  }
-  
+    return;
+  } 
+  if (isLoginMember.value) memberLogin();
+  else mercenaryLogin();
+
 }
 
 const convertLoginType = (type) => {
+  password.value = "";
+  mercenaryCode.value = "";
   if (type === "member") {
     isLoginMember.value = true;
   } else {
@@ -163,11 +164,11 @@ const mercenaryLogin = async() => {
   try {
     if (valid) {
       const url = "/api/auth/login/mercenary";
-      const login = {
+      const loginPayload = {
         mobile: mobile.value,
-        code: mercenaryCode.value
+        mercenaryCode: mercenaryCode.value
       };
-      const result = await write(url, null, login);
+      const result = await write(url, null, loginPayload);
       setUserDetail(result);
       alert("용병 권한으로 정상 로그인 되었습니다.");
       router.replace({name: "Dashboard"});
