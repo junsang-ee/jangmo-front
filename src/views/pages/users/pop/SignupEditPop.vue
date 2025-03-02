@@ -1,220 +1,261 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500px" persistent :click-outside="false">
-    <v-card>
-      <v-card-title class="text-h5 text-center">회원가입</v-card-title>
-      <v-card-text>
-        <v-form ref="isValid">
-          <div v-if="currentStep !== SignupState.ENTER_DETAIL">
-            <div class="mobile-wrap">
-              <v-text-field
-                :readonly="isDisabledMobile"
-                v-model="mobile"
-                class="phone-width"
-                type="tel" 
-                placeholder="휴대전화번호 11자리('-' 제외)"
-                :rules="mobileRule"
-                @input="validateNumericInput"
-                maxlength="11"
-                counter
-                required 
-                outlined
-              >
-                <template v-if="isDisabledMobile" #append>
-                  <v-btn 
-                    class="mobile-modify-btn" 
-                    text small 
-                    @click="modifyMobile"
-                  >
-                    수정하기
-                  </v-btn>
-                </template>
-              </v-text-field>
-            </div>
-            <div class="code-wrap">
-              <v-text-field 
-                v-if="isShowVerificationField" 
-                v-model="verificationCode" 
-                type="text" 
-                placeholder="인증번호 6자리(숫자)"
-                :rules="codeRule"
-                class="phone-width"
-                maxlength="6"
-                @input="validateNumericInput"
-                counter
-                outlined 
-              >
-                <template #append>
-                  <v-btn 
-                    class="resend-btn" 
-                    text small 
-                    @click="resendVerificationCode"
-                  >
-                    재전송
-                  </v-btn>
-                </template>
-              </v-text-field>
-            </div>
-            <div v-if="isShowVerificationField" class="timer-wrap">
-              <span class="timer">{{ minutes }}:{{ seconds < 10 ? '0' + seconds : seconds }}</span>
-            </div>
-            <v-card class="agreement-box">
-              <v-checkbox
-                @click="toggleAllAgree"
-                v-model="allAgree"
-                label="모두 동의"
-              />
-              <v-divider class="my-3"></v-divider>
-              <div>
-                <v-row class="align-center">
-                  <v-col cols="8">
-                    <v-checkbox
-                      v-model="isAgreePersonalInfo"
-                      label="[필수] 개인정보 수집/이용 동의"
-                    />
-                  </v-col>
-                  <v-col cols="4" class="text-right">
-                    <v-btn text small @click="openDialog('privacy')">보기</v-btn>
-                  </v-col>
-                </v-row>
-                <v-row class="align-center">
-                  <v-col cols="8">
-                    <v-checkbox
-                      v-model="isAgreeTermsOfService"
-                      label="[필수] 이용약관 동의"
-                    />   
-                  </v-col>
-                  <v-col cols="4" class="text-right">
-                    <v-btn text small @click="openDialog('terms')">보기</v-btn>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-card>
-          </div>
-          <div v-else>
-            <div class="name-wrap">
-              <label class="name-label">이름</label>
-                <v-text-field 
-                  v-model="name" 
-                  type="text"
-                  placeholder="이름(공백 제외)"
-                  :rules="nameRule"
+  <div class="text-xs-center">
+    <v-dialog v-model="dialog" max-width="500px" persistent :click-outside="false">
+      <v-card>
+        <v-card-title 
+          class="text-h5 text-center headline grey lighten-2"
+          primary-title
+        >
+          회원가입
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="isValid">
+            <div v-if="currentStep !== SignupState.ENTER_DETAIL">
+              <div class="mobile-wrap">
+                <v-text-field
+                  :readonly="isDisabledMobile"
+                  v-model="mobile"
+                  class="phone-width"
+                  type="tel" 
+                  placeholder="휴대전화번호 11자리('-' 제외)"
+                  :rules="mobileRule"
+                  @input="validateNumericInput"
+                  maxlength="11"
+                  counter
                   required 
                   outlined
-                />
-            </div>
-            <div class="gender-wrap">
-              <label class="gender-label">성별</label>
-              <v-radio-group inline
-                v-model="gender"
-                :mandatory="true"
-                :rules="genderRule"
-                row
-              >
-                <v-radio label="남자" value="MALE" />
-                <v-radio label="여자" value="FEMALE" />
-              </v-radio-group>
-            </div>
-            <div v-if="props.signupType === 'MEMBER'">
-              <div class="birthday-wrap">
-                <label class="birthday-label" for="birthday">생년월일</label>
-                <v-text-field 
-                    v-model="birthDay"
-                    type="text"
-                    placeholder="생년월일 8자리(YYYY/MM/DD)"
-                    :rules="birthRule"
-                    maxlength="11"
-                    @input="validateNumericInput"
-                    required 
-                    outlined
-                  />
-              </div>
-              <div class="address-wrap">
-                <label class="address-label">주소</label>
-                <v-select
-                  v-model="selectedCity"
-                  :items="cities"
-                  :rules="cityRule"
-                  item-title="name"
-                  item-value="cityId"
-                  placeholder="시/도"
-                  class="half-width"
-                  :loading="isLoading"
-                  outlined
-                  required
-                  return-object
-                />
-                <v-select
-                  v-model="selectedDistrict"
-                  :items="districts"
-                  :rules="districtRule"
-                  item-title="name"
-                  item-value="districtId"
-                  placeholder="시/군/구"
-                  class="half-width"
-                  :loading="isLoading"
-                  :disabled="!selectedCity"
-                  return-object
-                  outlined
-                  required
-                />
-              </div>
-              <div class="password-wrap">
-                <label class="password-label">비밀번호</label>
-                <v-text-field 
-                  v-model="password" 
-                  :type="isShowPassword ? 'text' : 'password'"
-                  placeholder="비밀번호"
-                  :rules="passwordRule"
-                  class="password-field"
-                  required 
-                  outlined
-                  full-width
                 >
-                  <template #append>
-                    <v-btn icon @click="togglePasswordVisibility">
-                      <v-icon>{{ isShowPassword ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+                  <template v-if="isDisabledMobile" #append>
+                    <v-btn 
+                      class="mobile-modify-btn" 
+                      text small 
+                      @click="modifyMobile"
+                    >
+                      수정하기
                     </v-btn>
                   </template>
                 </v-text-field>
               </div>
+              <div class="code-wrap">
+                <v-text-field 
+                  v-if="isShowVerificationField" 
+                  v-model="verificationCode" 
+                  type="text" 
+                  placeholder="인증번호 6자리(숫자)"
+                  :rules="codeRule"
+                  class="phone-width"
+                  maxlength="6"
+                  @input="validateNumericInput"
+                  counter
+                  outlined 
+                >
+                  <template #append>
+                    <v-btn 
+                      class="resend-btn" 
+                      text small 
+                      @click="resendVerificationCode"
+                    >
+                      재전송
+                    </v-btn>
+                  </template>
+                </v-text-field>
+              </div>
+              <div v-if="isShowVerificationField" class="timer-wrap">
+                <span class="timer">{{ minutes }}:{{ seconds < 10 ? '0' + seconds : seconds }}</span>
+              </div>
+              <v-card class="agreement-box">
+                <v-checkbox
+                  @click="toggleAllAgree"
+                  v-model="allAgree"
+                  label="모두 동의"
+                />
+                <v-divider class="my-3"></v-divider>
+                <div>
+                  <v-row class="align-center">
+                    <v-col cols="8">
+                      <v-checkbox
+                        v-model="isAgreePersonalInfo"
+                        label="[필수] 개인정보 수집/이용 동의"
+                      />
+                    </v-col>
+                    <v-col cols="4" class="text-right">
+                      <v-btn text small @click="openDialog('privacy')">보기</v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-row class="align-center">
+                    <v-col cols="8">
+                      <v-checkbox
+                        v-model="isAgreeTermsOfService"
+                        label="[필수] 이용약관 동의"
+                      />   
+                    </v-col>
+                    <v-col cols="4" class="text-right">
+                      <v-btn text small @click="openDialog('terms')">보기</v-btn>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card>
             </div>
-          </div>
-        </v-form>
-      </v-card-text>
-
-      <v-card-actions class="button-actions">
-        <v-row class="d-flex justify-center">
-          <v-col cols="12" class="d-flex justify-center">
-            <v-btn
-              :disabled="isButtonDisabled()" 
-              @click="executeButtonAction" 
-              class="action-btn signup-btn"
-              :class="{ active: !isButtonDisabled() }"
-              :loading="isLoading"
-            >
-              {{ nextButtonText }}
-            </v-btn>
-          </v-col>
-          <v-col cols="12" class="d-flex justify-center">
-            <v-btn @click="closeDialog" class="action-btn cancel-btn">닫기</v-btn>
-          </v-col>
-        </v-row>
-      </v-card-actions>
-    </v-card>
-
-    <v-dialog v-model="dialogContent" max-width="400px">
-      <v-card>
-        <v-card-title>{{ dialogTitle }}</v-card-title>
-        <v-card-text>
-          <div v-html="dialogText"></div>
+            <div v-else>
+              <div class="name-wrap">
+                <label class="name-label">이름</label>
+                  <v-text-field 
+                    v-model="name" 
+                    type="text"
+                    placeholder="이름(공백 제외)"
+                    :rules="nameRule"
+                    required 
+                    outlined
+                  />
+              </div>
+              <div class="gender-wrap">
+                <label class="gender-label">성별</label>
+                <v-radio-group inline
+                  v-model="gender"
+                  :mandatory="true"
+                  :rules="genderRule"
+                  row
+                >
+                  <v-radio label="남자" value="MALE" />
+                  <v-radio label="여자" value="FEMALE" />
+                </v-radio-group>
+              </div>
+              <div v-if="props.signupType === 'MEMBER'">
+                <div class="birthday-wrap">
+                  <label class="birthday-label" for="birthday">생년월일</label>
+                  <v-text-field 
+                      v-model="birthDay"
+                      type="text"
+                      placeholder="생년월일 8자리(YYYY/MM/DD)"
+                      :rules="birthRule"
+                      maxlength="11"
+                      @input="validateNumericInput"
+                      required 
+                      outlined
+                    />
+                </div>
+                <div class="address-wrap">
+                  <label class="address-label">주소</label>
+                  <v-select
+                    v-model="selectedCity"
+                    :items="cities"
+                    :rules="cityRule"
+                    item-title="name"
+                    item-value="cityId"
+                    placeholder="시/도"
+                    class="half-width"
+                    :loading="isLoading"
+                    outlined
+                    required
+                    return-object
+                  />
+                  <v-select
+                    v-model="selectedDistrict"
+                    :items="districts"
+                    :rules="districtRule"
+                    item-title="name"
+                    item-value="districtId"
+                    placeholder="시/군/구"
+                    class="half-width"
+                    :loading="isLoading"
+                    :disabled="!selectedCity"
+                    return-object
+                    outlined
+                    required
+                  />
+                </div>
+                <div class="password-wrap">
+                  <label class="password-label">비밀번호</label>
+                  <v-text-field 
+                    v-model="password" 
+                    :type="isShowPassword ? 'text' : 'password'"
+                    placeholder="비밀번호"
+                    :rules="passwordRule"
+                    class="password-field"
+                    required 
+                    outlined
+                    full-width
+                  >
+                    <template #append>
+                      <v-btn icon @click="togglePasswordVisibility">
+                        <v-icon>{{ isShowPassword ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
+                </div>
+              </div>
+            </div>
+          </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" @click="closeContentDialog">닫기</v-btn>
+
+        <v-card-actions class="button-actions">
+          <v-row class="d-flex justify-center">
+            <v-col cols="12" class="d-flex justify-center">
+              <v-btn
+                :disabled="isButtonDisabled()" 
+                @click="executeButtonAction" 
+                class="action-btn signup-btn"
+                :class="{ active: !isButtonDisabled() }"
+                :loading="isLoading"
+                flat
+              >
+                {{ nextButtonText }}
+              </v-btn>
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center">
+              <v-btn 
+                @click="closeDialog" 
+                class="action-btn cancel-btn"
+                color="primary"
+                text="닫기"
+              />
+            </v-col>
+          </v-row>
         </v-card-actions>
       </v-card>
+
+      <v-dialog v-model="dialogContent" max-width="400px">
+        <v-card>
+          <v-card-title>{{ dialogTitle }}</v-card-title>
+          <v-card-text>
+            <div v-html="dialogText"></div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" @click="closeContentDialog">닫기</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <div class="text-center pa-4">
+        <v-dialog
+          v-model="isShowRetentionDialog"
+          max-width="400"
+          persistent
+        >
+          <v-card
+            prepend-icon="mdi-account"
+            class="mercenary-retention-notice"
+            text="매칭된 매치 종료 후 개인정보가 영구 삭제됩니다. 이에 동의하십니까?
+            (예 선택 시, 매칭된 매치 종료 후 개인정보(휴대폰 번호)삭제.)
+            (아니오 선택 시, 매칭된 매치 종료 후에도 개인정보 삭제되지 않음.)
+            "
+            title="개인 정보 삭제 및 유지 여부"
+          >
+            <template v-slot:actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="retentionOnCancel()">
+                아니오
+              </v-btn>
+              <v-btn @click="retentionOnConfirm()">
+                예
+              </v-btn>
+            </template>
+          </v-card>
+        </v-dialog>
+      </div>
     </v-dialog>
-  </v-dialog>
+  </div>
 </template>
 
 <script setup>
@@ -227,7 +268,6 @@ const dialog = ref(true);
 const mobile = ref("");
 const verificationCode = ref("");
 const password = ref("");
-
 const selectedCity = ref(null);
 const selectedDistrict = ref(null);
 const cities = ref([]);
@@ -251,6 +291,7 @@ const isValid = ref(false);
 const name = ref("");
 const birthDay = ref(null);
 
+const isShowRetentionDialog = ref(false);
 const props = defineProps({
   signupType: {
     type: String,
@@ -343,6 +384,11 @@ const isButtonDisabled = () => {
       return !isFormValid.value;
     case SignupState.ENTER_CODE:
       return !(isFormValid.value && isValidCode.value);
+    case SignupState.ENTER_DETAIL:
+      if (props.signupType === "MEMBER")
+        return !isValidSignUp.value;
+      else 
+        return !isValidRegister.value;
     default: break;
   }
 }
@@ -352,7 +398,7 @@ const agreementTexts = {
     title: "[필수] 개인정보 수집 및 이용 동의",
     text: 
     `
-      1. 수집 항목: 성명, 휴대폰 번호<br>
+      1. 수집 항목: 성명, 휴대폰 번호, 생년월일<br>
       2. 수집 목적: 회원가입 및 서비스 이용<br>
       3. 보유 기간: 회원 탈퇴 시까지<br>
     `
@@ -362,12 +408,34 @@ const agreementTexts = {
     title: "[필수] 서비스 이용약관 동의",
     text: 
       `
-        1. 고유식별정보: 주민등록번호, 외국인등록번호 등록<br>
+        1. 고유식별정보: 휴대폰 번호<br>
         2. 처리 목적: 본인 확인 및 서비스 제공<br>
       `
       ,
   }
 };
+
+const openMercenaryRetentionDialog = async() => {
+  isShowRetentionDialog.value = true;
+}
+
+const retentionOnConfirm = () => {
+  handleRetentionResponse(true);
+};
+
+const retentionOnCancel = () => {
+  handleRetentionResponse(false);
+};
+
+const handleRetentionResponse = async(status) => {
+  isShowRetentionDialog.value = false;
+  retentionStatus.value = status;
+  if (!isShowRetentionDialog.value) {
+    setTimeout(() => {
+      registerMercenary();
+    }, 350);
+  }
+}
 
 const isValidCode = computed(() => {
   return valid("VALID_CODE", verificationCode.value);
@@ -377,6 +445,18 @@ const isFormValid = computed(() => {
   return mobile.value.length === 11 && 
       isAgreePersonalInfo.value && 
       isAgreeTermsOfService.value;
+});
+
+const isValidRegister = computed(() => {
+  return valid("NAME", name.value) && gender.value
+});
+
+const isValidSignUp = computed(() => {
+  return (valid("NAME", name.value) && 
+          gender.value &&
+          valid("BIRTH", birthDay.value) && validateDate(birthDay.value) &&
+          selectedCity.value && selectedDistrict.value &&
+          valid("PASSWORD", password.value));
 });
 
 const timer = ref(180); 
@@ -419,9 +499,11 @@ const executeButtonAction = async() => {
       await verifyCode();
       break;
     case SignupState.ENTER_DETAIL:
-      if (props.signupType === "MEMBER")
+      if (props.signupType === "MEMBER") {
         await signupMember();
-      else await registerMercenary();
+      } else {
+        await openMercenaryRetentionDialog();
+      }
       break;
   }
 }
@@ -469,7 +551,6 @@ const getDistricts = async(cityId) => {
   }
 }
 
-
 const resendVerificationCode = async() => {
   await sendVerificationCode();
 };
@@ -503,7 +584,6 @@ const verifyCode = async() => {
   }
 }
 const validateNumericInput = () => {
-
   if (verificationCode.value) {
     verificationCode.value = verificationCode.value.replace(/\D/g, '');
     if (verificationCode.value.length > 6) {
@@ -539,9 +619,6 @@ const closeContentDialog = () => {
 };
 
 const registerMercenary = async() => {
-  if (confirm("매치 참여 후 개인정보를 유지하기를 원하십니까?")) {
-    retentionStatus.value = "KEEP";
-  } else retentionStatus.value = "DELETE";
   const {valid} = await isValid.value.validate();
   try {
     if (valid) {
@@ -558,7 +635,6 @@ const registerMercenary = async() => {
   } catch(e) {
     alert(e.message);
   }
-
 }
 
 const signupMember = async() => {
@@ -688,6 +764,10 @@ onMounted(() => {
 
 .signup-btn {
   width: 80%;
+}
+
+.mercenary-retention-notice {
+  white-space: pre-line;
 }
 
 .signup-btn.active {
