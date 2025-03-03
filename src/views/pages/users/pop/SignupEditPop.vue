@@ -284,7 +284,11 @@ const dialogText = ref("");
 const currentStep = ref(SignupState.ENTER_MOBILE);
 const isShowVerificationField = ref(false);
 const isShowPassword = ref(false);
-const nextButtonText = computed(() => SignupMessage[currentStep.value]);
+const nextButtonText = computed(() => {
+  if (currentStep.value === "ENTER_DETAIL" && props.signupType === "MERCENARY")
+    return "용병등록 요청";
+  return SignupMessage[currentStep.value];
+});
 const isDisabledMobile = ref(false);
 const gender = ref(null);
 const isValid = ref(false);
