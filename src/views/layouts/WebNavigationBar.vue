@@ -2,7 +2,9 @@
   <v-navigation-drawer app permanent>
     <v-list>
       <v-list-item class="category-title">
-        <v-list-item-title>내 계정</v-list-item-title>
+        <v-list-item-title>
+          <span>{{ $userInfo.getInfo().name }}({{ $userInfo.getInfo().role }})</span> 
+        </v-list-item-title>
       </v-list-item>
       <v-list-item
         v-for="(item, index) in categories"

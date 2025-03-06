@@ -9,7 +9,7 @@
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
-          내 계정
+         <span>{{ $userInfo.getInfo().name }}({{ $userInfo.getInfo().role }})</span> 
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -35,10 +35,9 @@ import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { storeToRefs } from "pinia";
-  
+
 const router = useRouter();
 const route = useRoute();
-
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const categories = [
