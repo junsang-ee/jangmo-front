@@ -32,7 +32,10 @@
           <div class="label">주소</div>
           <v-card class="value-card value-card-with-action">
             <v-card-text>{{ address }}</v-card-text>
-            <v-btn class="action-btn" @click="openAddressChange" color="primary" outlined>주소 변경</v-btn>
+            <v-btn 
+              class="modify-address-btn" 
+              @click="openModifyAddressDialog" 
+              color="primary" outlined>주소 변경</v-btn>
           </v-card>
         </div>
       </v-col>
@@ -50,7 +53,7 @@
           <update-password-pop />
         </div>
         <div class="action-item">
-          <v-btn class="action-btn" @click="confirmAccountDelete" color="error" outlined>회원 탈퇴</v-btn>
+          <v-btn class="retire-btn" @click="confirmAccountDelete" color="error" outlined>회원 탈퇴</v-btn>
         </div>
       </v-col>
     </v-row>
@@ -81,6 +84,7 @@ const memberDetail = ref({
 });
 
 const dialog = ref(false);
+const isShowModifyAddress = ref(false);
 const newMobile = ref("");
 const verificationCode = ref("");
 const verificationSent = ref(false);
@@ -88,6 +92,8 @@ const verificationSent = ref(false);
 const openDialog = () => {
   dialog.value = true;
 };
+
+const openModifyAddressDialog = () => isShowModifyAddress.value = true;
 
 const closeDialog = () => {
   dialog.value = false;
@@ -117,24 +123,23 @@ const confirmAccountDelete = () => {
 
 const _loadInfo = async() => {
   if ($userInfo.getInfo().role !== "MERCENARY") {
-    const memberDetail = await getMemberDetail();
-    name.value = memberDetail.name;
-    mobile.value = autoMobileHyphen(memberDetail.mobile);
-    birth.value = replaceBirthHyphen(memberDetail.birth);
-    createdAt.value = convertDateOnlyDay(memberDetail.createdAt);
-    address.value = memberDetail.city.name + " " + memberDetail.district.name;
+    await getMemberDetail();
+    name.value = memberDetail.value.name;
+    mobile.value = autoMobileHyphen(memberDetail.value.mobile);
+    birth.value = replaceBirthHyphen(memberDetail.value.birth);
+    createdAt.value = convertDateOnlyDay(memberDetail.value.createdAt);
+    address.value = memberDetail.value.city.name + " " + memberDetail.value.district.name;
   } else {
     name.value = $userInfo.getInfo().name;
     mobile.value = $userInfo.getInfo().mobile;
     createdAt.value = convertDateOnlyDay($userInfo.getInfo().createdAt);
   }
-  
 }
 
 const getMemberDetail = async() => {
   try {
     const response = await read("/api/user/member/detail");
-    return response.data.data;
+    memberDetail.value = response.data.data;
   }catch(e) {
     alert(e.message);
   }
@@ -189,7 +194,7 @@ onMounted(() => {
   align-items: center;
 }
 
-.value-card-with-action .action-btn {
+.value-card-with-action .modify-address-btn {
   margin-left: 20px;
   font-size: 0.9rem;
 }
@@ -199,7 +204,14 @@ onMounted(() => {
   text-align: center;
 }
 
-.action-btn {
+.modify-address-btn {
+  font-size: 1rem;
+  padding: 12px 12px;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.retire-btn {
   font-size: 1rem;
   padding: 12px 12px;
   font-weight: 500;
