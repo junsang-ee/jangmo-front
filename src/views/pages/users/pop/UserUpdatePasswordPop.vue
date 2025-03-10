@@ -135,9 +135,11 @@ const close = () => {
 }
 
 .action-btn {
+  display: inline-flex;
   font-size: 1rem;
   padding: 12px 12px;
   font-weight: 500;
   min-width: 250px;
 }
+
 </style>

@@ -766,7 +766,7 @@ onMounted(() => {
   border: 1px solid transparent;
 }
 
-.signup-btn {
+.signup-btn, .cancel-btn {
   width: 80%;
 }
 
@@ -777,10 +777,6 @@ onMounted(() => {
 .signup-btn.active {
   background-color: #90caf9;
   color: white;
-}
-
-.cancel-btn {
-  width: 80%;
 }
 
 .password-field {
@@ -823,6 +819,10 @@ onMounted(() => {
   color: #757575;
   margin-bottom: 8px;
   display: block;
+}
+
+.v-btn {
+  display: inline-flex;
 }
 
 </style>

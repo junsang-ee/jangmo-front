@@ -35,7 +35,10 @@
             <v-btn 
               class="modify-address-btn" 
               @click="openModifyAddressDialog" 
-              color="primary" outlined>주소 변경</v-btn>
+              color="primary" 
+              outlined
+              text="주소 변경"
+            />
           </v-card>
         </div>
       </v-col>
@@ -57,11 +60,61 @@
         </div>
       </v-col>
     </v-row>
+    <v-dialog v-model="isShowModifyAddress" max-width="500px" persistent :click-outside="false">
+      <v-card>
+        <v-card-title class="title-text">주소 변경</v-card-title>
+        <v-card-text>
+          <v-form ref="isAddressValid">
+            <div class="address-wrap">
+              <label class="address-label">주소</label>
+              <v-select
+                v-model="selectedCity"
+                :items="cities"
+                :rules="cityRule"
+                item-title="name"
+                item-value="cityId"
+                placeholder="시/도"
+                class="half-width"
+                :loading="isLoading"
+                outlined
+                required
+                return-object
+              />
+              <v-select
+                v-model="selectedDistrict"
+                :items="districts"
+                :rules="districtRule"
+                item-title="name"
+                item-value="districtId"
+                placeholder="시/군/구"
+                class="half-width"
+                :loading="isLoading"
+                :disabled="!selectedCity"
+                outlined
+                required
+                return-object
+              />
+            </div>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn 
+            :disabled="!getIsEnabledModifyAddress()"
+            class="confirm-modify-address-btn"
+            color="primary"
+            text="변경"
+            flat
+          />
+          <v-btn flat class="close-address-btn" color="primary" @click="closeModifyAddressDialog">닫기</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { read } from "@/utils/util-axios.js";
 import { useUserInfoStore } from "@/store/user";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
@@ -74,13 +127,20 @@ const mobile = ref("");
 const createdAt = ref(null);
 const address = ref("");
 const birth = ref("");
+const cities = ref([]);
+const districts = ref([]);
+const selectedCity = ref(null);
+const selectedDistrict = ref(null);
+const isAddressValid = ref(false);
 const memberDetail = ref({
   name: "",
   mobile: "",
   createdAt: "",
   address: "",
-  city: null,
-  district: null
+  cityId: 0,
+  cityName: "",
+  districtId: 0,
+  districtName: ""
 });
 
 const dialog = ref(false);
@@ -88,12 +148,30 @@ const isShowModifyAddress = ref(false);
 const newMobile = ref("");
 const verificationCode = ref("");
 const verificationSent = ref(false);
+const isValid = ref(false);
+const isLoading = ref(false);
+const cityRule = [
+  v => !!v || "시/도를 선택해주세요."
+];
+
+const districtRule = [
+  v => !!v || "시/군/구를 선택해주세요."
+];
 
 const openDialog = () => {
   dialog.value = true;
 };
 
-const openModifyAddressDialog = () => isShowModifyAddress.value = true;
+const openModifyAddressDialog = async() => {
+  isShowModifyAddress.value = true;
+  await getCities();
+  await getDistricts(memberDetail.value.cityId);
+}
+const closeModifyAddressDialog = () => {
+  isShowModifyAddress.value = false;
+  selectedCity.value = findCity(memberDetail.value.cityId);
+  selectedDistrict.value = findDistrict(memberDetail.value.districtId);
+}
 
 const closeDialog = () => {
   dialog.value = false;
@@ -115,11 +193,28 @@ const openPasswordChange = () => {
   // 비밀번호 변경 로직
 };
 
+const findCity = (cityId) => {
+  return cities.value.find(city => city.cityId === cityId);
+}
+
+const findDistrict = (districtId) => {
+  return districts.value.find(district => district.districtId === districtId);
+}
+
 const confirmAccountDelete = () => {
   if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
 
   }
 };
+
+const getIsEnabledModifyAddress = () => {
+  if (!selectedCity.value || !selectedDistrict.value) {
+    return false;
+  }
+    
+  return !(memberDetail.value.cityId === selectedCity.value.cityId &&
+      memberDetail.value.districtId === selectedDistrict.value.districtId);
+}
 
 const _loadInfo = async() => {
   if ($userInfo.getInfo().role !== "MERCENARY") {
@@ -128,11 +223,39 @@ const _loadInfo = async() => {
     mobile.value = autoMobileHyphen(memberDetail.value.mobile);
     birth.value = replaceBirthHyphen(memberDetail.value.birth);
     createdAt.value = convertDateOnlyDay(memberDetail.value.createdAt);
-    address.value = memberDetail.value.city.name + " " + memberDetail.value.district.name;
+    address.value = memberDetail.value.cityName + " " + memberDetail.value.districtName;
   } else {
     name.value = $userInfo.getInfo().name;
     mobile.value = $userInfo.getInfo().mobile;
     createdAt.value = convertDateOnlyDay($userInfo.getInfo().createdAt);
+  }
+}
+
+const getCities = async() => {
+  isLoading.value = true;
+  try {
+    const response = await read("/api/auth/signup/cities");
+    cities.value = response.data.data;
+    selectedCity.value = findCity(memberDetail.value.cityId);
+    isLoading.value = false;
+  } catch(e) {
+    isLoading.value = false;
+    alert(e.message);
+  }
+}
+
+const getDistricts = async(cityId) => {
+  isLoading.value = true;
+  try {
+    const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
+    districts.value = response.data.data;
+    if (selectedCity.value === findCity(memberDetail.value.cityId)) {
+      selectedDistrict.value = findDistrict(memberDetail.value.districtId);
+    }
+    isLoading.value = false;
+  } catch(e) {
+    isLoading.value = false;
+    alert(e.message);
   }
 }
 
@@ -145,9 +268,15 @@ const getMemberDetail = async() => {
   }
 }
 
-onMounted(() => {
-    _loadInfo();
+watch(() => selectedCity.value, (val) => {
+  selectedDistrict.value = null;
+  getDistricts(val.cityId);
 });
+
+onMounted(() => {
+  _loadInfo();
+});
+
 </script>
 
 <style scoped>
@@ -197,18 +326,24 @@ onMounted(() => {
 .value-card-with-action .modify-address-btn {
   margin-left: 20px;
   font-size: 0.9rem;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  line-height: normal;
+  padding: 12px 12px;
+  min-width: 100px;
+  text-align: center; 
+  color: #1e88e5;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid #1e88e5;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .action-item {
   margin-top: 16px;
   text-align: center;
-}
-
-.modify-address-btn {
-  font-size: 1rem;
-  padding: 12px 12px;
-  font-weight: 500;
-  min-width: 100px;
 }
 
 .retire-btn {
@@ -217,4 +352,31 @@ onMounted(() => {
   font-weight: 500;
   min-width: 250px;
 }
+
+.title-text {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.address-wrap {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.confirm-modify-address-btn, .close-address-btn {
+  text-align: center; 
+  min-width: 80px;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.v-btn {
+  display: inline-flex;
+}
+
 </style>
