@@ -181,7 +181,7 @@ const mercenaryLogin = async() => {
 const setUserDetail = async(result) => {
   const token = tokenValidator(result.data?.data?.jwt);
   $token.setToken(token);
-  const myInfo = await read("/api/user/me");
+  const myInfo = await read("/api/users/me");
   $userInfo.setInfo(myInfo.data.data);
 }
 

@@ -100,13 +100,20 @@
         <v-card-actions>
           <v-spacer />
           <v-btn 
+            @click="modifyAddress"
             :disabled="!getIsEnabledModifyAddress()"
             class="confirm-modify-address-btn"
             color="primary"
             text="변경"
             flat
           />
-          <v-btn flat class="close-address-btn" color="primary" @click="closeModifyAddressDialog">닫기</v-btn>
+          <v-btn
+            @click="closeModifyAddressDialog" 
+            class="close-address-btn"
+            color="primary"
+            text="닫기"
+            flat
+          />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -115,7 +122,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { read } from "@/utils/util-axios.js";
+import { read, update } from "@/utils/util-axios.js";
 import { useUserInfoStore } from "@/store/user";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
 import UpdatePasswordPop from '@/views/pages/users/pop/UserUpdatePasswordPop.vue';
@@ -166,12 +173,10 @@ const openModifyAddressDialog = async() => {
   isShowModifyAddress.value = true;
   await getCities();
   await getDistricts(memberDetail.value.cityId);
-}
-const closeModifyAddressDialog = () => {
-  isShowModifyAddress.value = false;
   selectedCity.value = findCity(memberDetail.value.cityId);
   selectedDistrict.value = findDistrict(memberDetail.value.districtId);
 }
+const closeModifyAddressDialog = () => isShowModifyAddress.value = false;
 
 const closeDialog = () => {
   dialog.value = false;
@@ -189,10 +194,6 @@ const confirmPhoneChange = () => {
   closeDialog();
 };
 
-const openPasswordChange = () => {
-  // 비밀번호 변경 로직
-};
-
 const findCity = (cityId) => {
   return cities.value.find(city => city.cityId === cityId);
 }
@@ -202,7 +203,7 @@ const findDistrict = (districtId) => {
 }
 
 const confirmAccountDelete = () => {
-  if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
+  if (confirm("회원 탈퇴를 할 경우, 즉시 모든 데이터가 삭제됩니다. 그래도 회원 탈퇴를 하시겠습니까?")) {
 
   }
 };
@@ -211,23 +212,22 @@ const getIsEnabledModifyAddress = () => {
   if (!selectedCity.value || !selectedDistrict.value) {
     return false;
   }
-    
   return !(memberDetail.value.cityId === selectedCity.value.cityId &&
       memberDetail.value.districtId === selectedDistrict.value.districtId);
 }
 
 const _loadInfo = async() => {
-  if ($userInfo.getInfo().role !== "MERCENARY") {
+  if ($userInfo.getInfo().role === "MERCENARY") {
+    name.value = $userInfo.getInfo().name;
+    mobile.value = $userInfo.getInfo().mobile;
+    createdAt.value = convertDateOnlyDay($userInfo.getInfo().createdAt);
+  } else {
     await getMemberDetail();
     name.value = memberDetail.value.name;
     mobile.value = autoMobileHyphen(memberDetail.value.mobile);
     birth.value = replaceBirthHyphen(memberDetail.value.birth);
     createdAt.value = convertDateOnlyDay(memberDetail.value.createdAt);
     address.value = memberDetail.value.cityName + " " + memberDetail.value.districtName;
-  } else {
-    name.value = $userInfo.getInfo().name;
-    mobile.value = $userInfo.getInfo().mobile;
-    createdAt.value = convertDateOnlyDay($userInfo.getInfo().createdAt);
   }
 }
 
@@ -252,16 +252,36 @@ const getDistricts = async(cityId) => {
     if (selectedCity.value === findCity(memberDetail.value.cityId)) {
       selectedDistrict.value = findDistrict(memberDetail.value.districtId);
     }
-    isLoading.value = false;
   } catch(e) {
-    isLoading.value = false;
+    alert(e.message);
+  } finally {isLoading.value = false;}
+}
+
+const modifyAddress = async() => {
+  const {valid} = await isAddressValid.value.validate(); 
+  try {
+    if (valid) {
+      if (confirm(selectedCity.value.name + " " + 
+                  selectedDistrict.value.name + 
+                  " (으)로 주소를 변경하시겠습니까?")) {
+        await update("/api/users/members/address", null, {
+          cityId: selectedCity.value.cityId,
+          districtId: selectedDistrict.value.districtId
+        });
+        alert("주소가 정상적으로 변경되었습니다.");
+        _loadInfo();
+        closeModifyAddressDialog();
+      }
+    }
+  } catch(e) {
     alert(e.message);
   }
+
 }
 
 const getMemberDetail = async() => {
   try {
-    const response = await read("/api/user/member/detail");
+    const response = await read("/api/users/members/me");
     memberDetail.value = response.data.data;
   }catch(e) {
     alert(e.message);

@@ -3,7 +3,7 @@
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
-          <span>{{ $userInfo.getInfo().name }}({{ $userInfo.getInfo().role }})</span> 
+          <span>{{ $userInfo.getInfo().name }}({{ toKoreanRole($userInfo.getInfo().role) }})</span> 
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -28,6 +28,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
+import { toKoreanRole } from "@/utils/util-unit";
 
 const router = useRouter();
 const $auth = useTokenStore();

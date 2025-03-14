@@ -99,7 +99,7 @@ const updatePassword = async () => {
   try {
     isLoading.value = true;
     if (valid) {
-      await update("/api/user/member/password", null, {
+      await update("/api/users/members/password", null, {
           oldPassword: currentPassword.value,
           newPassword: newPassword.value
       });
