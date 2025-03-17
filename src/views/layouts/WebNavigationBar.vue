@@ -29,17 +29,15 @@ import { useRouter } from "vue-router";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { toKoreanRole } from "@/utils/util-unit";
+import { useCategories } from "@/store/category";
 
 const router = useRouter();
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const selectedCategory = ref("");
+const $category = useCategories();
 
-const categories = [
-  { name: "계정관리", component: "UserDetail" },
-  { name: "스케쥴관리", component: "NotFound" },
-  { name: "로그아웃", component: "Login" }
-];
+const categories = $category.getCategories($userInfo.getInfo().role);
 
 const selectCategory = (component) => {
   

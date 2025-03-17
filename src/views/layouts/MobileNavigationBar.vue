@@ -9,7 +9,7 @@
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
-         <span>{{ $userInfo.getInfo().name }}({{ $userInfo.getInfo().role }})</span> 
+          <span>{{ $userInfo.getInfo().name }}({{ toKoreanRole($userInfo.getInfo().role) }})</span> 
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -35,16 +35,16 @@ import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { storeToRefs } from "pinia";
+import { useCategories } from "@/store/category";
+import { toKoreanRole } from "@/utils/util-unit";
 
 const router = useRouter();
 const route = useRoute();
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
-const categories = [
-  { name: "계정관리", component: "UserDetail" },
-  { name: "스케쥴관리", component: "NotFound" },
-  { name: "로그아웃", component: "Login" }
-];
+const $category = useCategories();
+
+const categories = $category.getCategories($userInfo.getInfo().role);
 const selectedCategory = ref("");
 const hoveredCategory = ref(null);
 const isMobile = ref(window.innerWidth <= 768);
