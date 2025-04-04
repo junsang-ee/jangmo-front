@@ -9,7 +9,7 @@
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
-          <span>{{ $userInfo.getInfo().name }}({{ toKoreanRole($userInfo.getInfo().role) }})</span> 
+          <span>{{ $userInfo.getInfo()?.name }}({{ toKoreanRole($userInfo.getInfo()?.role) }})</span> 
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -44,7 +44,8 @@ const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const $category = useCategories();
 
-const categories = $category.getCategories($userInfo.getInfo().role);
+const categories = ref([]);
+
 const selectedCategory = ref("");
 const hoveredCategory = ref(null);
 const isMobile = ref(window.innerWidth <= 768);
@@ -81,6 +82,12 @@ watch(() => route.name, (routeName) => {
   if (routeName === "Dashboard")
     resetCategory();
 }, {immediate : true});
+
+watch(() => $userInfo.getInfo(), (newInfo) => {
+  if (newInfo) {
+    categories.value = $category.getCategories(newInfo.role);
+  }
+}, { immediate: true });
 </script>
   
 <style scoped>

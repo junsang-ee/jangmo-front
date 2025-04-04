@@ -220,7 +220,7 @@ const getIsEnabledModifyAddress = () => {
       memberDetail.value.districtId === selectedDistrict.value.districtId);
 }
 
-const _loadInfo = async() => {
+const loadInfo = async() => {
   if ($userInfo.getInfo().role === "MERCENARY") {
     name.value = $userInfo.getInfo().name;
     mobile.value = $userInfo.getInfo().mobile;
@@ -273,7 +273,7 @@ const modifyAddress = async() => {
           districtId: selectedDistrict.value.districtId
         });
         alert("주소가 정상적으로 변경되었습니다.");
-        _loadInfo();
+        loadInfo();
         closeModifyAddressDialog();
       }
     }
@@ -298,7 +298,7 @@ watch(() => selectedCity.value, (val) => {
 });
 
 onMounted(() => {
-  _loadInfo();
+  loadInfo();
 });
 
 </script>
