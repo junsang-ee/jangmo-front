@@ -7,6 +7,8 @@ export const USER_CATEGORIES = [
 export const MANAGER_CATEGORIES = [
   {name: "내 정보", component: "UserDetail"},
   {name: "유저 관리", component: "UserManagement"},
+  {name: "매치 관리", component: "NotFound"},
+  {name: "구장 관리", component: "NotFound"},
   {name: "로그아웃", component: "Login"},
 ]
 
