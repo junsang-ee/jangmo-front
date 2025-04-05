@@ -37,7 +37,7 @@
             </v-col>
           </v-row>
           <div class="table-container">
-            <v-data-table
+            <v-data-table-server
               v-model:items-per-page="pageSize"
               :headers="userTableHeaders"
               :items="userList"
@@ -47,7 +47,7 @@
               item-key="userId"
               class="elevation-1"
               @update:options="getUsers"
-              fixed-header
+              hide-default-footer
             >
               <template v-slot:item.userName="{ item }">
                 <span class="name-field">{{ item.userName}}</span>
@@ -73,7 +73,15 @@
                 </div>
               </template>
 
-            </v-data-table>
+            </v-data-table-server>
+            <v-row class="text-center px-4 align-center" wrap>
+              <v-col>
+                <v-pagination
+                  v-model="currentPage"
+                  :length="getPageCount"
+                />
+              </v-col>
+            </v-row>
           </div>
         </v-card>
         <UserDetailPop
@@ -129,6 +137,10 @@ const openUserDetailDialog = async(user) => {
   else userDetail.value = await getMercenary(user.userId);
   isOpenUserDetail.value = true;
 };
+
+const getPageCount = computed(() => {
+    return Math.floor(((totalCount.value-1) / pageSize.value) + 1);
+});
 
 const hideUserDetailDialog = () => {
   isOpenUserDetail.value = false;
@@ -249,7 +261,7 @@ watch([selectedUserType, selectedUserStatus], () => {
     overflow-x: auto;
   }
 
-  .v-data-table {
+  .v-data-table-server {
     font-size: 13px;
   }
 
