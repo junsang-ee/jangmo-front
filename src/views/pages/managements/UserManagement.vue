@@ -101,7 +101,6 @@ import { read } from "@/utils/util-axios.js";
 import { translateUserRole } from "@/constants/role.js";
 import { USER_COMMON_STATUSES, MEMBER_STATUSES, MERCENARY_STATUSES} from "@/constants/user-status.js"
 import { translateMemberStatus, translateMercenaryStatus } from "@/constants/user-status.js"
-import { toKoreanRole } from "@/utils/util-unit";
 import UserDetailPop from "@/views/pages/managements/pop/UserDetailPop.vue";
 
 const userTypes = ref([

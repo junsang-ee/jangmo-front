@@ -10,3 +10,9 @@ export const MANAGER_CATEGORIES = [
   {name: "로그아웃", component: "Login"},
 ]
 
+export const getCategories = (role) => {
+  if (role === "ADMIN" || role === "MANAGER")
+    return MANAGER_CATEGORIES;
+  else return USER_CATEGORIES;
+}
+

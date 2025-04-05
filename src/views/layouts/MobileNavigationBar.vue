@@ -35,15 +35,13 @@ import { useNavigationStore } from "@/store/navigation";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { storeToRefs } from "pinia";
-import { useCategories } from "@/store/category";
 import { translateUserRole } from "@/constants/role.js";
-
+import { getCategories } from "@/constants/category.js";
 
 const router = useRouter();
 const route = useRoute();
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
-const $category = useCategories();
 
 const categories = ref([]);
 
@@ -84,9 +82,9 @@ watch(() => route.name, (routeName) => {
     resetCategory();
 }, {immediate : true});
 
-watch(() => $userInfo.getInfo(), (newInfo) => {
-  if (newInfo) {
-    categories.value = $category.getCategories(newInfo.role);
+watch(() => $userInfo.getInfo(), (userInfo) => {
+  if (userInfo) {
+    categories.value = getCategories(userInfo.role);
   }
 }, { immediate: true });
 </script>
