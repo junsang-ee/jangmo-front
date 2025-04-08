@@ -6,6 +6,19 @@
           <v-card-title>유저 관리</v-card-title>
         </v-card>
       </v-col>
+      
+      <v-col cols="12" class="d-flex justify-space-between align-center pa-2">
+        <div class="d-flex align-center" style="white-space: nowrap;">
+          <v-icon class="mr-2" color="primary">mdi-account-multiple</v-icon>
+          <span class="text-subtitle-1 font-weight-medium">
+            <span class="font-weight-bold">검색결과 </span>{{ totalCount }}
+          </span>
+        </div>
+
+        <div class="text-subtitle-2 text-grey-darken-1" style="white-space: nowrap;">
+          {{ totalCount }}건 중 {{ currentPage }}페이지
+        </div>
+      </v-col>
 
       <v-col cols="12">
         <v-card class="pa-2">
@@ -18,8 +31,8 @@
                 item-text="value"
                 label="유저 타입"
                 return-object
-                dense
                 hide-details
+                dense
               />
             </v-col>
 
@@ -31,9 +44,23 @@
                 item-text="value"
                 label="유저 상태"
                 return-object
-                dense
                 hide-details
+                dense
               />
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <div class="value-with-action">
+                <v-text-field
+                  v-model="searchKeyword"
+                  label="이름 검색"
+                  clearable
+                  append-inner-icon="mdi-magnify"
+                  @click:append-inner="getUsers"
+                  @keydown.enter="getUsers"
+                  hide-details
+                  dense
+                />
+              </div>
             </v-col>
           </v-row>
           <div class="table-container">
@@ -67,9 +94,8 @@
                     @click="openUserDetailDialog(item)" 
                     color="primary" 
                     outlined
-                  >
-                    상세보기
-                  </v-btn>
+                    text="상세보기"
+                  />
                 </div>
               </template>
 
@@ -79,6 +105,9 @@
                 <v-pagination
                   v-model="currentPage"
                   :length="getPageCount"
+                  :total-visible="7"
+                  next-icon="mdi-menu-right"
+                  prev-icon="mdi-menu-left"
                 />
               </v-col>
             </v-row>
@@ -115,6 +144,7 @@ const mercenaryStatuses = ref(MERCENARY_STATUSES);
 
 const selectedUserType = ref(userTypes.value[0]);
 const selectedUserStatus = ref(userStatuses.value[0]);
+const searchKeyword = ref("");
 const isLoading = ref(false);
 const userList = ref([]);
 const currentPage = ref(1);
@@ -172,7 +202,8 @@ const getUsers = async() => {
       size: pageSize.value,
       role: selectedUserType.value.value,
       memberStatus: getMemberStatus(),
-      mercenaryStatus: getMercenaryStatus()
+      mercenaryStatus: getMercenaryStatus(),
+      searchKeyword: searchKeyword.value
     });
     userList.value = response.data.data.list;
     totalCount.value = response.data.data.totalCount;
@@ -271,5 +302,7 @@ watch([selectedUserType, selectedUserStatus], () => {
 table.v-table thead th {
   font-weight: 700px;
 }
+
+
 </style>
 
