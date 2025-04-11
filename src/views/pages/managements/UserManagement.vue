@@ -1,28 +1,18 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <v-card class="pa-2 mb-3">
-          <v-card-title>유저 관리</v-card-title>
+    <v-row justify="center" class="mb-4">
+      <v-col cols="12" sm="10" md="8">
+        <v-card class="pa-4 elevation-2 d-flex align-center title-card">
+          <v-icon size="32" color="primary" class="mr-3">mdi-account-cog</v-icon>
+          <v-card-title class="text-h5 font-weight-bold mb-0">유저 관리</v-card-title>
         </v-card>
       </v-col>
-      
-      <v-col cols="12" class="d-flex justify-space-between align-center pa-2">
-        <div class="d-flex align-center" style="white-space: nowrap;">
-          <v-icon class="mr-2" color="primary">mdi-account-multiple</v-icon>
-          <span class="text-subtitle-1 font-weight-medium">
-            <span class="font-weight-bold">검색결과 </span>{{ totalCount }}
-          </span>
-        </div>
+    </v-row>
 
-        <div class="text-subtitle-2 text-grey-darken-1" style="white-space: nowrap;">
-          {{ totalCount }}건 중 {{ currentPage }}페이지
-        </div>
-      </v-col>
-
-      <v-col cols="12">
-        <v-card class="pa-2">
-          <v-row class="search-section" dense>
+    <v-row justify="center">
+      <v-col cols="12" sm="10" md="8">
+        <v-card class="pa-4 elevation-1 rounded-lg section-card">
+          <v-row class="search-section mb-4" dense>
             <v-col cols="12" sm="6" md="4">
               <v-select
                 v-model="selectedUserType"
@@ -48,82 +38,90 @@
                 dense
               />
             </v-col>
+
             <v-col cols="12" sm="6" md="4">
-              <div class="value-with-action">
-                <v-text-field
-                  v-model="searchKeyword"
-                  label="이름 검색"
-                  clearable
-                  append-inner-icon="mdi-magnify"
-                  @click:append-inner="getUsers"
-                  @keydown.enter="getUsers"
-                  hide-details
-                  dense
-                />
+              <v-text-field
+                v-model="searchKeyword"
+                label="이름 검색"
+                clearable
+                append-inner-icon="mdi-magnify"
+                @click:append-inner="getUsers"
+                @keydown.enter="getUsers"
+                hide-details
+                dense
+              />
+            </v-col>
+          </v-row>
+          <v-row class="mb-2">
+            <v-col cols="12" class="d-flex justify-space-between align-center">
+              <div class="d-flex align-center text-subtitle-1 font-weight-medium">
+                <v-icon class="mr-2" color="primary">mdi-account-multiple</v-icon>
+                <span>
+                  <strong>검색결과</strong> {{ totalCount }}
+                </span>
+              </div>
+              <div class="text-caption text-grey-darken-1">
+                {{ totalCount }}건 중 {{ currentPage }}페이지
               </div>
             </v-col>
           </v-row>
-          <div class="table-container">
-            <v-data-table-server
-              v-model:items-per-page="pageSize"
-              :headers="userTableHeaders"
-              :items="userList"
-              :items-length="totalCount"
-              :loading="isLoading"
-              :page.sync="currentPage"
-              item-key="userId"
-              class="elevation-1"
-              @update:options="getUsers"
-              hide-default-footer
-            >
-              <template v-slot:item.userName="{ item }">
-                <span class="name-field">{{ item.userName}}</span>
-              </template>
-              <template v-slot:item.role="{ item }">
-                <span class="role-field">{{ translateUserRole(item.role)}}</span>
-              </template>
-              <template v-slot:item.status="{ item }">
-                <span class="status-field">
-                  {{ getStatus(item.role, item.status) }}
-                </span>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <div>
-                  <v-btn 
-                    class="user-detail-btn" 
-                    @click="openUserDetailDialog(item)" 
-                    color="primary" 
-                    outlined
-                    text="상세보기"
-                  />
-                </div>
-              </template>
+          <v-data-table-server
+            v-model:items-per-page="pageSize"
+            :headers="userTableHeaders"
+            :items="userList"
+            :items-length="totalCount"
+            :loading="isLoading"
+            :page.sync="currentPage"
+            item-key="userId"
+            class="elevation-1 data-table"
+            @update:options="getUsers"
+            hide-default-footer
+          >
+            <template v-slot:item.userName="{ item }">
+              <span class="name-field">{{ item.userName }}</span>
+            </template>
+            <template v-slot:item.role="{ item }">
+              <span class="role-field">{{ translateUserRole(item.role) }}</span>
+            </template>
+            <template v-slot:item.status="{ item }">
+              <span class="status-field">
+                {{ getStatus(item.role, item.status) }}
+              </span>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-btn 
+                class="user-detail-btn" 
+                @click="openUserDetailDialog(item)" 
+                color="primary" 
+                variant="outlined"
+                text="상세보기"
+              />
+            </template>
+          </v-data-table-server>
 
-            </v-data-table-server>
-            <v-row class="text-center px-4 align-center" wrap>
-              <v-col>
-                <v-pagination
-                  v-model="currentPage"
-                  :length="getPageCount"
-                  :total-visible="7"
-                  next-icon="mdi-menu-right"
-                  prev-icon="mdi-menu-left"
-                />
-              </v-col>
-            </v-row>
-          </div>
+          <v-row class="text-center mt-4" justify="center">
+            <v-col cols="auto">
+              <v-pagination
+                v-model="currentPage"
+                :length="getPageCount"
+                :total-visible="7"
+                next-icon="mdi-menu-right"
+                prev-icon="mdi-menu-left"
+              />
+            </v-col>
+          </v-row>
+
         </v-card>
-        <UserDetailPop
-          v-if="isOpenUserDetail"
-          :userDetail="userDetail"
-          @close="hideUserDetailDialog"
-        />
       </v-col>
     </v-row>
+
+    <UserDetailPop
+      v-if="isOpenUserDetail"
+      :userDetail="userDetail"
+      @close="hideUserDetailDialog"
+    />
   </v-container>
-
 </template>
-
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
 import { read } from "@/utils/util-axios.js";
@@ -240,20 +238,18 @@ watch([selectedUserType, selectedUserStatus], () => {
 
 </script>
 <style scoped>
-.pa-2 {
-  padding: 8px;
-}
-.mb-3 {
-  margin-bottom: 12px;
-}
-.elevation-1 {
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+.title-card {
+  background-color: #f5f7fa;
+  border-radius: 16px;
 }
 
-.table-container {
-  overflow-x: auto;
-  max-width: 100%;
-  white-space: nowrap;
+.section-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+.search-section {
+  row-gap: 8px;
 }
 
 .name-field,
@@ -266,10 +262,10 @@ watch([selectedUserType, selectedUserStatus], () => {
   max-width: 120px;
 }
 
-.search-section {
-  margin-bottom: 8px;
-  row-gap: 4px;
+.data-table {
+  white-space: nowrap;
 }
+
 
 @media (max-width: 768px) {
   .v-select {
@@ -287,10 +283,6 @@ watch([selectedUserType, selectedUserStatus], () => {
     max-width: 90px;
   }
 
-  .table-container {
-    overflow-x: auto;
-  }
-
   .v-data-table-server {
     font-size: 13px;
   }
@@ -299,10 +291,5 @@ watch([selectedUserType, selectedUserStatus], () => {
     font-size: 16px;
   }
 }
-table.v-table thead th {
-  font-weight: 700px;
-}
-
-
 </style>
 

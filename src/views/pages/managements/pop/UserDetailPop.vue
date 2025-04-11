@@ -104,7 +104,7 @@ const props = defineProps({
   }
 });
 const isMember = ref(props.userDetail.role !== "MERCENARY");
-const titleRole = ref(isMember ? "회원" : "용병");
+const titleRole = ref(isMember.value ? "회원" : "용병");
 const emit = defineEmits(['close']);
 
 const closeDialog = () => {
