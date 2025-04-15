@@ -17,22 +17,12 @@
 
     <v-row justify="center">
       <v-col cols="12" sm="10" md="8">
-        <v-card class="pa-4 elevation-1 rounded-lg calendar-card">
-          <v-date-picker
-            v-model="selectedDate"
-            :events="isMatchDay"
-            :event-color="getEventColor()"
-            color="primary"
-            show-adjacent-months
-            elevation="2"
-            class="rounded-lg match-calendar compact-calendar"
-          >
-            <template #title>
-              <div class="">
-                test
-              </div>
-            </template>
-          </v-date-picker>
+        <v-card class="pa-4 elevation-1 calendar-card">
+          <FullCalendar 
+            :options="calendarOptions" 
+            class="full-calendar"
+            :selectable="true"
+          />
         </v-card>
       </v-col>
     </v-row>
@@ -41,30 +31,57 @@
 
 <script setup>
 import { ref } from 'vue'
+import FullCalendar from '@fullcalendar/vue3'
+import DayGridPlugin from '@fullcalendar/daygrid'
+import TimeGridPlugin from '@fullcalendar/timegrid'
+import InteractionPlugin from '@fullcalendar/interaction'
+import ListPlugin from '@fullcalendar/list'
+
+const selectedDate = ref(null)
 
 const matchDates = ref([
   '2025-04-09',
   '2025-04-12',
   '2025-04-15',
   '2025-04-20'
-])
-const today = new Date();
-const selectedDate = ref(today);
+]);
 
-const isMatchDay = (date) => {
-  const target = new Date(date).toISOString().split('T')[0]
-  return matchDates.value.includes(target)
+const calendarOptions = ref({
+  locale: 'ko',
+  plugins: [DayGridPlugin, TimeGridPlugin, InteractionPlugin],
+  initialView: 'dayGridMonth',
+  events: matchDates.value.map(date => ({
+    title: '매치',
+    date: date,
+    color: 'green',
+  })),
+  eventClick: (info) => {
+    alert("test");
+  },
+  dateClick: (info) => {
+    selectedDate.value = info.dateStr
+    alert(`선택된 날짜: ${info.dateStr}`)
+  },
+  eventMouseover: {
+  },
+  headerToolbar: {
+    left: 'prev',
+    center: 'title',
+    right: 'next',
+  },
+  height: 'auto',
+  contentHeight: 'auto',
+  expandRows: true,
+});
+
+
+
+const test = (e) => {
+  alert("test");
 }
-
-// 매치가 있는 날은 초록색 점 표시
-const getEventColor = (date) => {
-  return isMatchDay(date) ? 'green' : ''
-}
-
 const onCreateMatchVote = () => {
-  alert("투표 생성");
+  alert("투표 생성")
 }
-
 </script>
 
 <style scoped>
@@ -74,28 +91,71 @@ const onCreateMatchVote = () => {
 }
 
 .calendar-card {
-  white-space: nowrap;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
-}
-
-.match-calendar {
-  width: 100%;
   border-radius: 12px;
-  max-width: 100%;
+  padding: 16px;
+  width: 100%;
   overflow-x: auto;
 }
 
-.match-create-btn, .match-vote-create-btn {
+.match-create-btn,
+.match-vote-create-btn {
   white-space: nowrap;
   min-width: 100px;
 }
 
-.compact-calendar {
+.full-calendar {
+  width: 100% !important;
+  height: auto !important;
+  overflow-x: auto;
+}
+
+.fc {
+  font-size: 14px;
+  width: 100%;
+}
+
+.fc .fc-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fc .fc-toolbar > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fc .fc-button {
+  background-color: #1976d2;
+  border-color: #1976d2;
+  color: white;
   font-size: 13px;
-  --v-date-picker-header-height: 36px;
-  --v-date-picker-day-cell-height: 36px;
-  --v-date-picker-day-cell-width: 36px;
+}
+
+.fc .fc-button:hover {
+  background-color: #1565c0;
+}
+
+.fc .fc-daygrid-day-frame {
+  padding: 6px;
+}
+
+.fc .fc-daygrid-event {
+  background-color: #4caf50;
+  font-size: 13px;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fc-daygrid-day-frame {
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -110,11 +170,45 @@ const onCreateMatchVote = () => {
     font-size: 16px;
   }
 
-  .compact-calendar {
+  .calendar-card {
+    padding: 8px !important;
+  }
+
+  .fc {
     font-size: 12px;
-    --v-date-picker-header-height: 30px;
-    --v-date-picker-day-cell-height: 32px;
-    --v-date-picker-day-cell-width: 32px;
+  }
+
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    padding: 4px;
+  }
+
+  .fc .fc-daygrid-event {
+    font-size: 11px;
+  }
+}
+</style>
+<style>
+.fc .fc-daygrid-day {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.fc .fc-daygrid-day:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+@media (max-width: 768px) {
+  .fc .fc-daygrid-day {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .fc .fc-daygrid-day:hover {
+    background-color: rgba(25, 118, 20, 0.1);
   }
 }
 </style>

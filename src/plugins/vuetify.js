@@ -24,6 +24,9 @@ const vuetify = createVuetify({
     fallback: "en",
     messages: {ko, en}
   },
+  theme: {
+    defaultTheme: "light"
+  },
   directives
 })
 
