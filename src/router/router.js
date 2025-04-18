@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import UserDetail from "@/views/pages/users/UserDetail.vue";
 import UserManagement from "@/views/pages/managements/UserManagement.vue";
 import MatchManagement from "@/views/pages/managements/MatchManagement.vue";
+import GroundManagement from "@/views/pages/managements/GroundManagement.vue";
+
 
 import Login from "@/views/Login.vue";
 import Dashboard from "@/views/components/Dashboard.vue";
@@ -14,6 +16,7 @@ const routes = [
   { path: "/userDetail", name: "UserDetail", component: UserDetail },
   { path: "/userManagement", name: "UserManagement", component: UserManagement },
   { path: "/matchManagement", name: "MatchManagement", component: MatchManagement },
+  { path: "/groundManagement", name: "GroundManagement", component: GroundManagement },
   { path: "/login", name: "Login", component: Login },
   { path: "/404", name: "NotFound", component: NotFound },
   { path: "/500", name: "InternalServer", component: InternalServer },

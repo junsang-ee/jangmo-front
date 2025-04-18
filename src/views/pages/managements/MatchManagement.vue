@@ -26,18 +26,23 @@
         </v-card>
       </v-col>
     </v-row>
+    <match-list-pop 
+      v-model="matchDialog"
+    />
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import DayGridPlugin from '@fullcalendar/daygrid'
-import TimeGridPlugin from '@fullcalendar/timegrid'
-import InteractionPlugin from '@fullcalendar/interaction'
-import ListPlugin from '@fullcalendar/list'
+import { ref } from "vue";
+import FullCalendar from "@fullcalendar/vue3";
+import DayGridPlugin from "@fullcalendar/daygrid";
+import TimeGridPlugin from "@fullcalendar/timegrid";
+import InteractionPlugin from "@fullcalendar/interaction";
+import ListPlugin from "@fullcalendar/list";
+import MatchListPop from "@/views/pages/managements/pop/MatchListPop.vue";
 
-const selectedDate = ref(null)
+const matchDialog = ref(false);
+const selectedDate = ref(null);
 
 const matchDates = ref([
   '2025-04-09',
@@ -47,41 +52,45 @@ const matchDates = ref([
 ]);
 
 const calendarOptions = ref({
-  locale: 'ko',
+  locale: "ko",
   plugins: [DayGridPlugin, TimeGridPlugin, InteractionPlugin],
-  initialView: 'dayGridMonth',
+  initialView: "dayGridMonth",
   events: matchDates.value.map(date => ({
-    title: '매치',
+    title: "매치",
     date: date,
-    color: 'green',
+    color: "green",
   })),
   eventClick: (info) => {
-    alert("test");
+    const dateStr = info.event.start.toISOString().split('T')[0];
+    alert(dateStr);
+    // onDayClick();
   },
   dateClick: (info) => {
+    // onDayClick();
+    alert(info.dateStr);
     selectedDate.value = info.dateStr
-    alert(`선택된 날짜: ${info.dateStr}`)
-  },
-  eventMouseover: {
   },
   headerToolbar: {
-    left: 'prev',
-    center: 'title',
-    right: 'next',
+    left: "prev",
+    center: "title",
+    right: "next",
   },
-  height: 'auto',
-  contentHeight: 'auto',
+  height: "auto",
+  contentHeight: "auto",
   expandRows: true,
 });
 
+const onDayClick = () => {
+  matchDialog.value = true;
+};
 
 
 const test = (e) => {
   alert("test");
-}
+};
 const onCreateMatchVote = () => {
   alert("투표 생성")
-}
+};
 </script>
 
 <style scoped>
