@@ -189,7 +189,9 @@ const getMercenary = async(userId) => {
   try {
     const response = await read(`/api/managers/mercenaries/${userId}`);
     return response;
-  } catch(e) {alert(e.message);}
+  } catch(e) {
+    alert(e.message);
+  }
 }
 
 const getUsers = async() => {
