@@ -39,29 +39,32 @@ const vueAxios = {
     $axios.interceptors.response.use(
       (response) => {
         $loading.setLoading(false);
-        let responseCode = response.data.code;
+        const responseCode = response.data?.code ?? 0;
         if (responseCode > 1) {
-          return Promise.reject(response.data);
+          const err = new Error(response.data?.message || "알 수 없는 에러가 발생하였습니다.");
+          err.response = response;
+          return Promise.reject(err);
         }
-        return response;
+        return response.data?.data;
       },
       (error) => {
         $loading.setLoading(false);
-        if (error.response) {
-          switch (error.response.status) {
-            case 403:
-              alert("세션이 만료되었습니다.");
-              router.replace({ name: "Login" });
-              break;
-            case 500:
-              alert("데이터 처리 중 문제가 발생하였습니다.");
-              router.replace({name: "InternalServer"})
-              break;
-            default:
-              break;
+        const response = error.response;
+
+        if (!response?.data)
+          return Promise.reject(error);
+
+        const {code, message} = error.response.data;
+        const err = new Error(message || "알 수 없는 에러입니다.");
+        err.code = code;
+        if (response.status === 401) {
+          if (code === 4000) {
+            router.replace({name: "Login"});
           }
+        } else if (response.status === 500) {
+          router.replace({name: "InternalServer"});
         }
-        return Promise.reject(error);
+        return Promise.reject(err);
       }
     );
     vue.$axios = $axios;

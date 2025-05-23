@@ -239,11 +239,10 @@ const getCities = async() => {
   isLoading.value = true;
   try {
     const response = await read("/api/auth/signup/cities");
-    cities.value = response.data.data;
+    cities.value = response;
     selectedCity.value = findCity(memberDetail.value.cityId);
     isLoading.value = false;
   } catch(e) {
-    isLoading.value = false;
     alert(e.message);
   }
 }
@@ -252,13 +251,15 @@ const getDistricts = async(cityId) => {
   isLoading.value = true;
   try {
     const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
-    districts.value = response.data.data;
+    districts.value = response;
     if (selectedCity.value === findCity(memberDetail.value.cityId)) {
       selectedDistrict.value = findDistrict(memberDetail.value.districtId);
     }
   } catch(e) {
     alert(e.message);
-  } finally {isLoading.value = false;}
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 const modifyAddress = async() => {
@@ -286,7 +287,7 @@ const modifyAddress = async() => {
 const getMemberDetail = async() => {
   try {
     const response = await read("/api/users/members/me");
-    memberDetail.value = response.data.data;
+    memberDetail.value = response;
   }catch(e) {
     alert(e.message);
   }

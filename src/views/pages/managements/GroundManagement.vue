@@ -7,7 +7,7 @@
             <v-icon size="36" color="primary" class="mr-3">mdi-map-marker-radius</v-icon>
             <v-card-title class="text-h5 font-weight-bold mb-0">구장 관리</v-card-title>
           </div>
-          <v-btn color="primary" variant="flat" @click="dialog = true" size="small">구장 추가</v-btn>
+          <v-btn color="primary" variant="flat" @click="openSearchPop" size="small">구장 추가</v-btn>
         </v-card>
       </v-col>
     </v-row>
@@ -33,35 +33,52 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <GroundSearchPop :dialog="dialog" @update:dialog="dialog = $event" @close="dialog = false" @add-ground="addGround" />
+    <GroundSearchPop
+      v-if="isShowSearchPop"
+      @close="closeSearchPop"
+    />
   </v-container>
 </template>
 
 <script setup>
-import { ref } from "vue"
-import GroundSearchPop from "@/views/pages/managements/pop/GroundSearchPop.vue"
+import { ref } from "vue";
+import { write, read } from "@/utils/util-axios.js";
+import GroundSearchPop from "@/views/pages/managements/pop/GroundSearchPop.vue";
 
-const dialog = ref(false)
+const isShowSearchPop = ref(false);
 
 const groundList = ref([
   { name: "서울 월드컵 경기장", address: "서울특별시 마포구 성산동" },
   { name: "잠실 종합 운동장", address: "서울특별시 송파구 잠실동" }
-])
+]);
 
 const headers = [
   { title: "구장명", key: "name" },
   { title: "도로명 주소", key: "address" },
   { title: "구장 상세", key: "actions", sortable: false }
-]
+];
+
+const openSearchPop = () => {
+  isShowSearchPop.value = true;
+}
+
+const closeSearchPop = () => {
+  isShowSearchPop.value = false;
+}
 
 const viewDetail = (item) => {
   alert(`📍 ${item.name}\n📌 ${item.address}`)
-}
+};
 
-const addGround = (ground) => {
+const addGround = async(groundInfo) => {
+  try {
+    await write("/api/managers/", null, groundInfo);
+    
+  }catch(e) {
+    alert(e.message);
+  }
   groundList.value.push(ground);
-}
+};
 </script>
 
 <style scoped>

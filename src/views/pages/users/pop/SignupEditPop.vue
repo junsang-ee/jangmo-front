@@ -535,7 +535,7 @@ const getCities = async() => {
   isLoading.value = true;
   try {
     const response = await read("/api/auth/signup/cities");
-    cities.value = response.data.data;
+    cities.value = response;
     isLoading.value = false;
   } catch (e) {
     isLoading.value = false;
@@ -547,7 +547,7 @@ const getDistricts = async(cityId) => {
   isLoading.value = true;
   try {
     const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
-    districts.value = response.data.data;
+    districts.value = response;
     isLoading.value = false;
   } catch(e) {
     isLoading.value = false;

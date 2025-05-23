@@ -118,7 +118,7 @@
     <UserDetailPop
       v-if="isOpenUserDetail"
       :userDetail="userDetail"
-      @close="hideUserDetailDialog"
+      @close="closeDetailPop"
     />
   </v-container>
 </template>
@@ -169,7 +169,7 @@ const getPageCount = computed(() => {
     return Math.floor(((totalCount.value-1) / pageSize.value) + 1);
 });
 
-const hideUserDetailDialog = () => {
+const closeDetailPop = () => {
   isOpenUserDetail.value = false;
   getUsers();
 }
@@ -181,14 +181,14 @@ const getStatus = (role, status) => {
 const getMember = async(userId) => {
   try {
     const response = await read(`/api/managers/members/${userId}`);
-    return response.data.data;
+    return response;
   } catch(e) { alert(e.message); }
 }
 
 const getMercenary = async(userId) => {
   try {
     const response = await read(`/api/managers/mercenaries/${userId}`);
-    return response.data.data;
+    return response;
   } catch(e) {alert(e.message);}
 }
 
@@ -203,11 +203,11 @@ const getUsers = async() => {
       mercenaryStatus: getMercenaryStatus(),
       searchKeyword: searchKeyword.value
     });
-    userList.value = response.data.data.list;
-    totalCount.value = response.data.data.totalCount;
+    userList.value = response.list;
+    totalCount.value = response.totalCount;
   } catch(e) {
     alert(e.message);
-  } finally { isLoading.value = false; }
+  } finally {isLoading.value = false;}
 }
 
 const getMemberStatus = () => {

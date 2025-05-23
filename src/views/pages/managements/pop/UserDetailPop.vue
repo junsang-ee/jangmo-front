@@ -105,7 +105,7 @@ const props = defineProps({
 });
 const isMember = ref(props.userDetail.role !== "MERCENARY");
 const titleRole = ref(isMember.value ? "회원" : "용병");
-const emit = defineEmits(['close']);
+const emit = defineEmits(["close"]);
 
 const closeDialog = () => {
   isDialogOpen.value = false;
@@ -115,15 +115,14 @@ const closeDialog = () => {
 const getMember = async() => {
   try {
     const response = await read(`/api/managers/members/${props.userId}`);
-    userDetail.value = response.data.data;
-
+    userDetail.value = response;
   } catch(e) { alert(e.message); }
 }
 
 const getMercenary = async() => {
   try {
     const response = await read(`/api/managers/mercenaries/${props.userId}`);
-    userDetail.value = response.data.data;
+    userDetail.value = response;
   } catch(e) {alert(e.message);}
 }
 
