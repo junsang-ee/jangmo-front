@@ -21,6 +21,7 @@ const vueAxios = {
 
     $axios.interceptors.request.use(
       (config) => {
+        console.log(`Request : ${config.url}, ${JSON.stringify(config.params)}`);
         if (config.method !== "get") {
           $loading.setLoading(true);
         }

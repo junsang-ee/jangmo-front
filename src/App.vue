@@ -8,6 +8,15 @@
         <router-view />
       </v-container>
     </v-main>
+    <v-overlay
+        :model-value="$loading.isLoading"
+        class="align-center justify-center">
+      <v-progress-circular
+          color="primary"
+          indeterminate
+          size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
@@ -23,11 +32,13 @@ import { useUserInfoStore } from "@/store/user";
 import { tokenValidator } from "@/utils/util-auth";
 import { storeToRefs } from 'pinia';
 import { useRouter} from "vue-router";
+import { useLoadingStore } from "@/store/loading";
 
 const isMobile = ref(false);
 const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const $navigation = useNavigationStore();
+const $loading = useLoadingStore();
 const { menuVisible } = storeToRefs($navigation); 
 const router = useRouter();
 

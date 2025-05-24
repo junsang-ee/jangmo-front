@@ -61,9 +61,19 @@
               </span>
             </div>
             <div class="text-center mt-4">
-              Jangmo 용병 등록을 원한다면?
+              Jangmo 용병을 원한다면?
               <span class="signup-link" @click="showSignup('MERCENARY')">
                 용병 등록 요청
+              </span>
+            </div>
+            <div class="text-center mt-4">
+              <span class="signup-link" @click="showSignup('MERCENARY')">
+                회원 비밀번호 찾기
+              </span>
+            </div>
+            <div class="text-center mt-4">
+              <span class="signup-link" @click="showSignup('MERCENARY')">
+                용병코드 재발급
               </span>
             </div>
           </v-form>

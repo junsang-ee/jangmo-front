@@ -148,9 +148,9 @@ const userList = ref([]);
 const currentPage = ref(1);
 const totalCount = ref(0);
 const pageSize = ref(10);
-const currentUserId = ref(1);
 const userDetail = ref({});
 const isOpenUserDetail = ref(false);
+
 const userTableHeaders = ref([
   { title: "이름", align: "start", value: "userName", sortable: false, class:"header" },
   { title: "유저타입", align: "start", value: "role", sortable: false, class:"header" },
@@ -209,7 +209,9 @@ const getUsers = async() => {
     totalCount.value = response.totalCount;
   } catch(e) {
     alert(e.message);
-  } finally {isLoading.value = false;}
+  } finally { 
+    isLoading.value = false;
+  }
 }
 
 const getMemberStatus = () => {

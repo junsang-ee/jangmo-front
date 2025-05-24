@@ -144,7 +144,6 @@
                     item-value="cityId"
                     placeholder="시/도"
                     class="half-width"
-                    :loading="isLoading"
                     outlined
                     required
                     return-object
@@ -157,7 +156,6 @@
                     item-value="districtId"
                     placeholder="시/군/구"
                     class="half-width"
-                    :loading="isLoading"
                     :disabled="!selectedCity"
                     return-object
                     outlined
@@ -196,7 +194,6 @@
                 @click="executeButtonAction" 
                 class="action-btn signup-btn"
                 :class="{ active: !isButtonDisabled() }"
-                :loading="isLoading"
                 flat
               >
                 {{ nextButtonText }}
@@ -272,7 +269,6 @@ const selectedCity = ref(null);
 const selectedDistrict = ref(null);
 const cities = ref([]);
 const districts = ref([]);
-const isLoading = ref(false);
 const retentionStatus = ref("DELETE");
 const allAgree = ref(false);
 const isAgreePersonalInfo = ref(false);
@@ -513,7 +509,6 @@ const executeButtonAction = async() => {
 }
 
 const sendVerificationCode = async() => {
-  isLoading.value = true;
   try {
     await write("/api/auth/signup/mobile/send-code", null, {
       mobile: mobile.value
@@ -522,35 +517,27 @@ const sendVerificationCode = async() => {
     currentStep.value = SignupState.ENTER_CODE;
     isDisabledMobile.value = true;
     startTimer();
-    isLoading.value = false;
     alert("인증번호가 전송되었습니다.");
   } catch(e) {
-    isLoading.value = false;
     isShowVerificationField.value = false;
     alert(e.message);
   }
 };
 
 const getCities = async() => {
-  isLoading.value = true;
   try {
     const response = await read("/api/auth/signup/cities");
     cities.value = response;
-    isLoading.value = false;
   } catch (e) {
-    isLoading.value = false;
     alert(e.message);
   }
 }
 
 const getDistricts = async(cityId) => {
-  isLoading.value = true;
   try {
     const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
     districts.value = response;
-    isLoading.value = false;
   } catch(e) {
-    isLoading.value = false;
     alert(e.message);
   }
 }
@@ -571,7 +558,6 @@ const modifyMobile = () => {
 }
 
 const verifyCode = async() => {
-  isLoading.value = true;
   try {
     await write("/api/auth/signup/mobile/verify-code", null, {
       code: verificationCode.value,
@@ -581,9 +567,7 @@ const verifyCode = async() => {
     stopTimer();
     currentStep.value = SignupState.ENTER_DETAIL;
     getCities();
-    isLoading.value = false;
   } catch(e) {
-    isLoading.value = false;
     alert(e.message);
   }
 }
