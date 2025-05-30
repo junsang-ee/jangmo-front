@@ -6,7 +6,7 @@ import MatchManagement from "@/views/pages/managements/MatchManagement.vue";
 import GroundManagement from "@/views/pages/managements/GroundManagement.vue";
 
 
-import Login from "@/views/Login.vue";
+import Login from "@/views/pages/auth/Login.vue";
 import Dashboard from "@/views/components/Dashboard.vue";
 import NotFound from "@/views/pages/error/NotFound.vue";
 import InternalServer from "@/views/pages/error/InternalServer.vue";

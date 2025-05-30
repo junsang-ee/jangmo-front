@@ -120,7 +120,7 @@
                   <v-radio label="여자" value="FEMALE" />
                 </v-radio-group>
               </div>
-              <div v-if="props.signupType === 'MEMBER'">
+              <div v-if="isMember">
                 <div class="birthday-wrap">
                   <label class="birthday-label" for="birthday">생년월일</label>
                   <v-text-field 
@@ -273,7 +273,7 @@ const retentionStatus = ref("DELETE");
 const allAgree = ref(false);
 const isAgreePersonalInfo = ref(false);
 const isAgreeTermsOfService = ref(false);
-
+const authPurposeType = ref("SIGNUP");
 const dialogContent = ref(false);
 const dialogTitle = ref("");
 const dialogText = ref("");
@@ -298,8 +298,9 @@ const props = defineProps({
     required: true
   }
 });
+const isMember = props.signupType === "MEMBER";
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(["close"]);
 
 const nameRule = [
   v => valid("NAME", v) || "이름은 2글자 이상의 한글로 입력해주세요."
@@ -510,8 +511,9 @@ const executeButtonAction = async() => {
 
 const sendVerificationCode = async() => {
   try {
-    await write("/api/auth/signup/mobile/send-code", null, {
-      mobile: mobile.value
+    await write("/api/auth/verification-codes", null, {
+      mobile: mobile.value,
+      authPurposeType: authPurposeType.value
     });
     isShowVerificationField.value = true;
     currentStep.value = SignupState.ENTER_CODE;
@@ -526,7 +528,7 @@ const sendVerificationCode = async() => {
 
 const getCities = async() => {
   try {
-    const response = await read("/api/auth/signup/cities");
+    const response = await read("/api/locations/cities");
     cities.value = response;
   } catch (e) {
     alert(e.message);
@@ -535,7 +537,7 @@ const getCities = async() => {
 
 const getDistricts = async(cityId) => {
   try {
-    const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
+    const response = await read(`/api/locations/cities/${cityId}/districts`);
     districts.value = response;
   } catch(e) {
     alert(e.message);
@@ -559,9 +561,10 @@ const modifyMobile = () => {
 
 const verifyCode = async() => {
   try {
-    await write("/api/auth/signup/mobile/verify-code", null, {
+    await write("/api/auth/verification-codes/verify", null, {
       code: verificationCode.value,
-      mobile: mobile.value
+      mobile: mobile.value,
+      authPurposeType: authPurposeType.value
     });
     alert("정상적으로 인증되었습니다.");
     stopTimer();

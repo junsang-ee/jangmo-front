@@ -13,7 +13,7 @@
                 label="휴대폰 번호"
                 placeholder="휴대폰 번호 11자리('-' 제외)"
                 type="tel"
-                :rules="mobileRule"
+                :rules="mobileRules"
                 required
                 outlined
                 class="mobile-field"
@@ -67,18 +67,27 @@
               </span>
             </div>
             <div class="text-center mt-4">
-              <span class="signup-link" @click="showSignup('MERCENARY')">
+              <span class="signup-link" @click="showResetCredentials('MEMBER')">
                 회원 비밀번호 찾기
               </span>
             </div>
             <div class="text-center mt-4">
-              <span class="signup-link" @click="showSignup('MERCENARY')">
+              <span class="signup-link" @click="showResetCredentials('MERCENARY')">
                 용병코드 재발급
               </span>
             </div>
           </v-form>
         </div>
-        <SignupEditPop v-if="isShowSignup" @close="hideSignup" :signupType="signupType"/>
+        <SignupEditPop 
+          v-if="isShowSignup" 
+          @close="hideSignup" 
+          :signupType="signupUserType"
+        />
+        <ResetCredentialsPop
+          v-if="isShowResetCredentials"
+          @close="hideResetCredentials"
+          :userType="resetUserType"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -92,18 +101,21 @@ import { tokenValidator } from "@/utils/util-auth";
 import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import SignupEditPop from '@/views/pages/users/pop/SignupEditPop.vue';
+import ResetCredentialsPop from "@/views/pages/auth/pop/ResetCredentialsPop.vue";
 
 const router = useRouter();
 const $token = useTokenStore();
 const $userInfo = useUserInfoStore();
 const mobile = ref("");
 const password = ref("");
+const resetUserType = ref("MEMBER");
+const signupUserType = ref("MEMBER");
 const isShowSignup = ref(false);
+const isShowResetCredentials = ref(false);
 const isShowVerifyInput = ref(false);
 const mercenaryCode = ref("");
 const isValid = ref(null);
 const isLoginMember = ref(true);
-const signupType = ref("MEMBER");
 const mobileRuleConfig = /^010\d{8}$/;
 
 const buttonText = computed(() => {
@@ -117,7 +129,7 @@ const buttonText = computed(() => {
   }
 });
 
-const mobileRule = [
+const mobileRules = [
   v => mobileRuleConfig.test(v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
@@ -128,6 +140,15 @@ const hideSignup = () => {
 const showSignup = (type) => {
   isShowSignup.value = true;
   signupType.value = type;
+}
+
+const showResetCredentials = (role) => {
+  resetUserType.value = role;
+  isShowResetCredentials.value = true;
+}
+
+const hideResetCredentials = () => {
+  isShowResetCredentials.value = false;
 }
 
 const executeButtonAction = () => {

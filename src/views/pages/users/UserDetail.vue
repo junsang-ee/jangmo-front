@@ -238,7 +238,7 @@ const loadInfo = async() => {
 const getCities = async() => {
   isLoading.value = true;
   try {
-    const response = await read("/api/auth/signup/cities");
+    const response = await read("/api/locations/cities");
     cities.value = response;
     selectedCity.value = findCity(memberDetail.value.cityId);
     isLoading.value = false;
@@ -250,7 +250,7 @@ const getCities = async() => {
 const getDistricts = async(cityId) => {
   isLoading.value = true;
   try {
-    const response = await read(`/api/auth/signup/cities/${cityId}/districts`);
+    const response = await read(`/api/locations/cities/${cityId}/districts`);
     districts.value = response;
     if (selectedCity.value === findCity(memberDetail.value.cityId)) {
       selectedDistrict.value = findDistrict(memberDetail.value.districtId);
