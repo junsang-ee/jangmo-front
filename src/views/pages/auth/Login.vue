@@ -139,7 +139,7 @@ const hideSignup = () => {
 
 const showSignup = (type) => {
   isShowSignup.value = true;
-  signupType.value = type;
+  signupUserType.value = type;
 }
 
 const showResetCredentials = (role) => {

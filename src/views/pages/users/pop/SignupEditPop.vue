@@ -6,7 +6,8 @@
           class="text-h5 text-center headline grey lighten-2"
           primary-title
         >
-          회원가입
+          <span v-if="isMember">회원가입</span>
+          <span v-else>용병등록</span>
         </v-card-title>
         <v-card-text>
           <v-form ref="isValid">
@@ -18,7 +19,7 @@
                   class="phone-width"
                   type="tel" 
                   placeholder="휴대전화번호 11자리('-' 제외)"
-                  :rules="mobileRule"
+                  :rules="mobileRules"
                   @input="validateNumericInput"
                   maxlength="11"
                   counter
@@ -42,8 +43,8 @@
                   v-model="verificationCode" 
                   type="text" 
                   placeholder="인증번호 6자리(숫자)"
-                  :rules="codeRule"
-                  class="phone-width"
+                  :rules="codeRules"
+                  class="code-width"
                   maxlength="6"
                   @input="validateNumericInput"
                   counter
@@ -61,7 +62,7 @@
                 </v-text-field>
               </div>
               <div v-if="isShowVerificationField" class="timer-wrap">
-                <span class="timer">{{ minutes }}:{{ seconds < 10 ? '0' + seconds : seconds }}</span>
+                <span class="timer">{{ minutes }}:{{ seconds < 10 ? "0" + seconds : seconds }}</span>
               </div>
               <v-card class="agreement-box">
                 <v-checkbox
@@ -103,7 +104,7 @@
                     v-model="name" 
                     type="text"
                     placeholder="이름(공백 제외)"
-                    :rules="nameRule"
+                    :rules="nameRules"
                     required 
                     outlined
                   />
@@ -113,7 +114,7 @@
                 <v-radio-group inline
                   v-model="gender"
                   :mandatory="true"
-                  :rules="genderRule"
+                  :rules="genderRules"
                   row
                 >
                   <v-radio label="남자" value="MALE" />
@@ -127,7 +128,7 @@
                       v-model="birthDay"
                       type="text"
                       placeholder="생년월일 8자리(YYYY/MM/DD)"
-                      :rules="birthRule"
+                      :rules="birthRules"
                       maxlength="11"
                       @input="validateNumericInput"
                       required 
@@ -139,7 +140,7 @@
                   <v-select
                     v-model="selectedCity"
                     :items="cities"
-                    :rules="cityRule"
+                    :rules="cityRules"
                     item-title="name"
                     item-value="cityId"
                     placeholder="시/도"
@@ -151,7 +152,7 @@
                   <v-select
                     v-model="selectedDistrict"
                     :items="districts"
-                    :rules="districtRule"
+                    :rules="districtRules"
                     item-title="name"
                     item-value="districtId"
                     placeholder="시/군/구"
@@ -168,7 +169,7 @@
                     v-model="password" 
                     :type="isShowPassword ? 'text' : 'password'"
                     placeholder="비밀번호"
-                    :rules="passwordRule"
+                    :rules="passwordRules"
                     class="password-field"
                     required 
                     outlined
@@ -176,7 +177,7 @@
                   >
                     <template #append>
                       <v-btn icon @click="togglePasswordVisibility">
-                        <v-icon>{{ isShowPassword ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+                        <v-icon>{{ isShowPassword ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
                       </v-btn>
                     </template>
                   </v-text-field>
@@ -196,7 +197,7 @@
                 :class="{ active: !isButtonDisabled() }"
                 flat
               >
-                {{ nextButtonText }}
+                {{ buttonText }}
               </v-btn>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
@@ -280,7 +281,7 @@ const dialogText = ref("");
 const currentStep = ref(SignupState.ENTER_MOBILE);
 const isShowVerificationField = ref(false);
 const isShowPassword = ref(false);
-const nextButtonText = computed(() => {
+const buttonText = computed(() => {
   if (currentStep.value === "ENTER_DETAIL" && props.signupType === "MERCENARY")
     return "용병등록 요청";
   return SignupMessage[currentStep.value];
@@ -302,36 +303,36 @@ const isMember = props.signupType === "MEMBER";
 
 const emit = defineEmits(["close"]);
 
-const nameRule = [
+const nameRules = [
   v => valid("NAME", v) || "이름은 2글자 이상의 한글로 입력해주세요."
 ]
 
-const codeRule = [
+const codeRules = [
   v => valid("VALID_CODE", v) || "인증코드는 6자리 숫자로 입력해주세요."
 ];
 
-const mobileRule = [
+const mobileRules = [
   v => valid("MOBILE", v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
-const genderRule = [
+const genderRules = [
   v => !!v || "성별을 선택해주세요."
 ];
 
-const cityRule = [
+const cityRules = [
   v => !!v || "시/도를 선택해주세요."
 ];
 
-const districtRule = [
+const districtRules = [
   v => !!v || "시/군/구를 선택해주세요."
 ];
 
-const birthRule = [
+const birthRules = [
   v => valid("BIRTH", v) || "생년월일은 8자리의 숫자로 입력해주세요.",
   v => validateDate(v) || "유효하지 않은 날짜입니다."
 ];
 
-const passwordRule = [
+const passwordRules = [
   v => valid("PASSWORD", v) || 
     "▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상"
 ];
@@ -675,7 +676,8 @@ onMounted(() => {
 
 <style scoped>
 
-.phone-width {
+.phone-width,
+.code-width {
   width: 100%;
 }
 
