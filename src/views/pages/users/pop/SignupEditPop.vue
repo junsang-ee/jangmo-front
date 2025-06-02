@@ -422,11 +422,11 @@ const openMercenaryRetentionDialog = async() => {
 }
 
 const retentionOnConfirm = () => {
-  handleRetentionResponse(true);
+  handleRetentionResponse("DELETE");
 };
 
 const retentionOnCancel = () => {
-  handleRetentionResponse(false);
+  handleRetentionResponse("KEEP");
 };
 
 const handleRetentionResponse = async(status) => {

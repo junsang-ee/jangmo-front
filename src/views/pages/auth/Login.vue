@@ -32,12 +32,13 @@
                 <v-text-field
                   v-else
                   v-model="mercenaryCode"
+                  class="mercenary-code-field"
                   label="용병코드"
                   placeholder="용병코드"
                   type="password"
+                  counter
                   required
                   outlined
-                  class="mercenary-code-field"
                 />
               </div>
             </div>
