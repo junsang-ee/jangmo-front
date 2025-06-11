@@ -82,6 +82,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <MatchListPop
+      v-if="isOpenMatchListPop"
+      :mercenaryId="mercenaryId"
+      @close="closeMatchListDialog"
+    />
+
+    
   </v-container>
 </template>
 
@@ -92,10 +99,10 @@ import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
 import { autoMobileHyphen, replaceBirthHyphen } from "@/utils/util-unit";
 import { translateMemberStatus, translateMercenaryStatus } from "@/constants/user-status.js"
 import { translateUserRole } from "@/constants/role.js";
+import MatchListPop from "@/views/pages/managements/pop/MatchListPop.vue";
 
-const memberDetail = ref();
-const mercenaryDetail = ref();
 const isDialogOpen = ref(true);
+const isOpenMatchListPop = ref(false);
 
 const props = defineProps({
   userDetail: {
@@ -105,12 +112,16 @@ const props = defineProps({
 });
 const isMember = ref(props.userDetail.role !== "MERCENARY");
 const titleRole = ref(isMember.value ? "회원" : "용병");
+const mercenaryId = ref("");
 const emit = defineEmits(["close"]);
 
 const closeDialog = () => {
   isDialogOpen.value = false;
   emit("close");
 };
+
+const openMatchListDialog = () => isOpenMatchListPop.value = true;
+const closeMatchListDialog = () => isOpenMatchListPop.value = false;
 
 const getMember = async() => {
   try {
@@ -130,16 +141,18 @@ const getAddressName = () => props.userDetail.cityName + " " + props.userDetail.
 
 const approve = async() => {
   try {
-    let roleName = isMember.value ? "회원" : "용병";
-    if (confirm("해당 " + roleName + "의 가입 요청을 승인하시겠습니까?")) {
-      let url = "/api/managers";
-      if (isMember) {
-        await update(`${url}/members/${props.userDetail.id}/approve`);
-      } else {
-        await update(`${url}/mercenary/${props.userDetail.id}/approve`);
+    if (isMember.value) {
+      if (confirm("해당 회원의 가입 요청을 승인 하시겠습니까?")) {
+        await update(`/api/managers/members/${props.userDetail.id}/approve`);
       }
       alert("가입 승인이 완료되었습니다.");
       closeDialog();
+    } else {
+      if (confirm("승인 대기 상태인 용병은 가입 승인 전 매치 등록이 선행되어야 합니다. \n" + 
+        "매치 등록을 진행할까요?")) {
+          mercenaryId.value = props.userDetail.id;
+          openMatchListDialog();
+      }
     }
   } catch(e) {
     alert(e.message);

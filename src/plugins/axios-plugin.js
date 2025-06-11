@@ -56,7 +56,7 @@ const vueAxios = {
           return Promise.reject(error);
 
         const {code, message} = error.response.data;
-        const err = new Error(message || "알 수 없는 에러입니다.");
+        const err = new Error(message || "알 수 없는 에러가 발생하였습니다.");
         err.code = code;
         if (response.status === 401) {
           if (code === 4000) {

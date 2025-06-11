@@ -6,7 +6,7 @@
         <span v-else>용병코드 재발급</span>
       </v-card-title>
       <v-card-text>
-        <v-form ref="formRef" lazy-validation>
+        <v-form ref="isValid" lazy-validation>
           <v-text-field
             v-model="mobile"
             label="휴대폰 번호"
@@ -87,12 +87,12 @@
 
 <script setup>
 import { ref, computed, defineProps, onMounted } from 'vue';
-import { read, write } from '@/utils/util-axios.js';
+import { read, write, update } from '@/utils/util-axios.js';
 import { valid } from "@/utils/util-regex";
 
 const dialog = ref(true);
 const formRef = ref(null);
-
+const isValid = ref(false);
 const mobile = ref("");
 const verificationCode = ref("");
 const newPassword = ref("");
@@ -175,7 +175,7 @@ const isButtonDisabled = computed(() => {
 const buttonText = computed(() => {
   if (!isCodeSent.value) return "인증번호 요청";
   if (!isVerified.value) return "인증번호 확인";
-  return isMember ? "비밀번호 재설정" : "용병코드 재발급";
+  return isMember.value ? "비밀번호 재설정" : "용병코드 재발급";
 });
 
 const handleAction = async() => {
@@ -184,7 +184,9 @@ const handleAction = async() => {
   } else if (!isVerified.value) {
     await verifyCode();
   } else {
-    await resetPassword();
+    if (isMember.value)
+      await resetPassword();
+    else await resetMercenaryCode();
   }
 };
 
@@ -217,14 +219,33 @@ const verifyCode = async() => {
   }
 };
 
-const resetPassword = async() => {
+const resetMercenaryCode = async() => {
   try {
-    await write("/api/auth/reset/password", null, {
-      mobile: mobile.value,
-      password: newPassword.value,
-    });
-    alert("비밀번호가 성공적으로 재설정되었습니다.");
-    closeDialog();
+    if (confirm("용병 코드를 재발급 받으시겠습니까?")) {
+      await update("/api/auth/mercenaries/code", null, {
+        mobile: mobile.value
+      });
+      alert("용병 코드가 정상적으로 전송되었습니다. 전송된 코드로 로그인 해주세요.");
+      closeDialog();
+    }
+  } catch(e) {
+    alert(e.message);
+  }
+}
+
+const resetPassword = async() => {
+  const {valid} = isValid.value.validate();
+  try {
+    if (valid) {
+      if (confirm("입력하신 새로운 비밀번호로 재설정 하시겠습니까?")) {
+        await update("/api/auth/members/password", null, {
+          mobile: mobile.value,
+          password: newPassword.value,
+        });
+        alert("비밀번호가 성공적으로 재설정되었습니다.");
+        closeDialog();
+      }
+    }
   } catch (e) {
     alert(e.message || "비밀번호 재설정 실패");
   }

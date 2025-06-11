@@ -1,69 +1,110 @@
 <template>
-  <v-dialog v-model="internalDialog" max-width="500px" persistent>
-    <v-card>
-      <v-card-title class="text-h6 font-weight-bold">
-        {{ selectedDate }} 매치 정보
-      </v-card-title>
-
+  <v-dialog v-model="dialog" max-width="600px">
+    <v-card class="pa-4">
+      <v-card-title class="headline font-weight-bold">매치 선택</v-card-title>
+      <v-divider class="my-2" />
       <v-card-text>
-        <div v-if="matches.length">
-          <v-list dense>
-            <v-list-item v-for="(match, index) in matches" :key="index">
+        <v-list>
+          <template v-if="matchList.length > 0">
+            <v-list-item
+              v-for="match in matchList"
+              :key="match.id"
+              class="match-item mb-2"
+            >
               <v-list-item-content>
-                <v-list-item-title class="font-weight-medium">{{ match.title }}</v-list-item-title>
-                <v-list-item-subtitle>일자: {{ match.date }}</v-list-item-subtitle>
+                <div class="text-subtitle-1 font-weight-medium">
+                  {{ formatDate(match.date) }}
+                </div>
+                <div class="text-body-2 text-grey">{{ match.location }}</div>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-btn color="primary" @click="handleMatch(match.id)">
+                  매칭하기
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </template>
+
+          <template v-else>
+            <v-list-item>
+              <v-list-item-content class="text-center">
+                <v-list-item-title class="text-grey mb-6">
+                  매치가 없습니다.
+                </v-list-item-title>
+                <div class="d-flex justify-center">
+                  <v-btn
+                    color="primary"
+                    class="create-match-btn"
+                    @click="createMatch"
+                    text="매치 생성하기"
+                  />
+                </div>
               </v-list-item-content>
             </v-list-item>
-          </v-list>
-        </div>
-        <div v-else class="no-match">
-          <v-icon color="grey" class="mb-2">mdi-calendar-remove</v-icon>
-          <p>선택한 날짜에 등록된 매치가 없습니다.</p>
-        </div>
+          </template>
+        </v-list>
       </v-card-text>
-
-      <v-card-actions class="justify-end">
-        <v-btn color="primary" @click="onCreateMatch">매치 생성</v-btn>
-        <v-btn text @click="closeDialog">닫기</v-btn>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn text @click="close">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-import { watch, ref } from 'vue'
+import { ref, onMounted, defineProps, defineEmits } from 'vue';
+import { read, update } from "@/utils/util-axios.js";
+import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
 
 const props = defineProps({
-  modelValue: Boolean,
-  selectedDate: String,
-  matches: Array,
-})
+  mercenaryId: String,
+});
+const emit = defineEmits(["close", "approved"]);
 
-const emits = defineEmits(['update:modelValue', 'create'])
+const dialog = ref(true);
+const matchList = ref([]);
 
-const internalDialog = ref(props.modelValue)
+const close = () => {
+  dialog.value = false;
+  emit("close");
+};
 
-watch(() => props.modelValue, (val) => {
-  internalDialog.value = val
-})
+const formatDate = (dateStr) => {
+  return convertDateOnlyDay(dateStr);
+};
 
-watch(internalDialog, (val) => {
-  emits('update:modelValue', val)
-})
+const handleMatch = async (matchId) => {
+  const confirmed = confirm("해당 매치에 이 용병을 매칭시키겠습니까?");
+  if (!confirmed) return;
 
-const closeDialog = () => {
-  internalDialog.value = false
-}
+  try {
+    await update(`/api/managers/mercenaries/${props.mercenaryId}/approve`, {
+      matchId: matchId,
+    });
+    alert("용병 매칭 및 가입 승인이 완료되었습니다.");
+    dialog.value = false;
+    emit("approved");
+  } catch (e) {
+    alert(e.message);
+  }
+};
 
-const onCreateMatch = () => {
-  emits('create')
-}
+onMounted(() => {
+
+});
 </script>
 
 <style scoped>
-.no-match {
-  text-align: center;
-  padding: 20px 0;
-  color: #757575;
+.match-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.create-match-btn {
+  min-width: 160px;
+  border-radius: 8px;
+  font-weight: bold;
 }
 </style>

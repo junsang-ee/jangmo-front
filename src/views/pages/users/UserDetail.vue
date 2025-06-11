@@ -125,7 +125,7 @@ import { ref, watch, onMounted } from 'vue';
 import { read, update } from "@/utils/util-axios.js";
 import { useUserInfoStore } from "@/store/user";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
-import UpdatePasswordPop from '@/views/pages/users/pop/UserUpdatePasswordPop.vue';
+import UpdatePasswordPop from "@/views/pages/users/pop/UserUpdatePasswordPop.vue";
 import {autoMobileHyphen, replaceBirthHyphen} from "@/utils/util-unit";
 
 const $userInfo = useUserInfoStore(); 
