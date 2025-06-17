@@ -7,9 +7,9 @@
             <v-icon size="32" color="primary" class="mr-3">mdi-soccer</v-icon>
             <v-card-title class="text-h5 font-weight-bold mb-0">매치 관리</v-card-title>
           </div>
-          <v-btn color="primary" @click="onCreateMatchVote" class="match-vote-create-btn">
+          <v-btn color="primary" @click="createMatch" class="match-vote-create-btn">
             <v-icon start>mdi-plus</v-icon>
-            투표 생성
+            매치 생성
           </v-btn>
         </v-card>
       </v-col>
@@ -84,12 +84,14 @@ const onDayClick = () => {
   matchDialog.value = true;
 };
 
-
-const test = (e) => {
-  alert("test");
-};
-const onCreateMatchVote = () => {
-  alert("투표 생성")
+const createMatch = () => {
+  if (selectedDate.value == null) {
+    alert("매치를 생성할 날짜를 먼저 선택해주세요.");
+    return;
+  }
+  if (confirm("매치를 생성하기 위해서는 투표 생성이 선행되어야 합니다. 매치 투표 생성 페이지로 이동합니다.")) {
+    
+  }
 };
 </script>
 

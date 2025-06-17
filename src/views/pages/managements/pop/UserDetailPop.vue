@@ -21,7 +21,7 @@
                 </v-card>
               </div>
             </v-col>
-            <v-col v-if="isMember" cols="12">
+            <v-col cols="12">
               <div class="field-container">
                 <div class="label">전화번호</div>
                 <v-card class="value-card">
