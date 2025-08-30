@@ -234,7 +234,7 @@ const resetMercenaryCode = async() => {
 }
 
 const resetPassword = async() => {
-  const {valid} = isValid.value.validate();
+  const valid = await isValid.value.validate();
   try {
     if (valid) {
       if (confirm("입력하신 새로운 비밀번호로 재설정 하시겠습니까?")) {

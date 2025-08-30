@@ -56,6 +56,9 @@
           <update-password-pop />
         </div>
         <div class="action-item">
+          <v-btn class="logout-btn" @click="confirmLogout" color="warning" outlined>로그아웃</v-btn>
+        </div>
+        <div class="action-item">
           <v-btn class="retire-btn" @click="confirmAccountDelete" color="error" outlined>회원 탈퇴</v-btn>
         </div>
       </v-col>
@@ -123,12 +126,16 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { read, update } from "@/utils/util-axios.js";
+import { useRouter, useRoute } from "vue-router";
 import { useUserInfoStore } from "@/store/user";
+import { useTokenStore } from "@/store/auth";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
 import UpdatePasswordPop from "@/views/pages/users/pop/UserUpdatePasswordPop.vue";
 import {autoMobileHyphen, replaceBirthHyphen} from "@/utils/util-unit";
 
-const $userInfo = useUserInfoStore(); 
+const router = useRouter();
+const $userInfo = useUserInfoStore();
+const $auth = useTokenStore();
 const name = ref("");
 const mobile = ref("");
 const createdAt = ref(null);
@@ -212,6 +219,14 @@ const confirmAccountDelete = async() => {
   }
 };
 
+const confirmLogout = () => {
+  if (confirm("로그아웃 하시겠습니까?")) {
+    $auth.reset();
+    $userInfo.reset();
+  }
+  router.replace("Login");
+}
+
 const getIsEnabledModifyAddress = () => {
   if (!selectedCity.value || !selectedDistrict.value) {
     return false;
@@ -263,7 +278,7 @@ const getDistricts = async(cityId) => {
 }
 
 const modifyAddress = async() => {
-  const {valid} = await isAddressValid.value.validate(); 
+  const valid = await isAddressValid.value.validate(); 
   try {
     if (valid) {
       if (confirm(selectedCity.value.name + " " + 
@@ -371,7 +386,8 @@ onMounted(() => {
   text-align: center;
 }
 
-.retire-btn {
+.retire-btn,
+.logout-btn {
   font-size: 1rem;
   padding: 12px 12px;
   font-weight: 500;

@@ -26,27 +26,18 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import { translateUserRole } from "@/constants/role.js";
 import { getCategories } from "@/constants/category.js";
 
 const router = useRouter();
-const $auth = useTokenStore();
 const $userInfo = useUserInfoStore();
 const selectedCategory = ref("");
 
 const categories = getCategories($userInfo.getInfo().role);
 
 const selectCategory = (component) => {
-  if (component === "Login") {
-    if (confirm("로그아웃 하시겠습니까?")) {
-      $auth.reset();
-      $userInfo.reset();
-    } else return;
-  } else {
-    selectedCategory.value = component;
-  }
+  selectedCategory.value = component;
   router.push({ name: component });
 };
 

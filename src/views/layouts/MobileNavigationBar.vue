@@ -61,14 +61,7 @@ const resetCategory = () => {
   hoveredCategory.value = null;
 }
 const selectCategory = (component) => {
-  if (component === "Login") {
-    if (confirm("로그아웃 하시겠습니까?")) {
-      $auth.reset();
-      $userInfo.reset();
-    } else return;
-  } else {
-    selectedCategory.value = component;
-  }
+  selectedCategory.value = component;
   closeMenu();
   router.push({name: component})
 };

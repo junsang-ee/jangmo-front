@@ -270,7 +270,7 @@ onMounted(loadKakao);
   color: #333;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .details {
     padding: 12px;
   }

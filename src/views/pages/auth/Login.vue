@@ -173,7 +173,7 @@ const convertLoginType = (type) => {
 }
 
 const memberLogin = async() => {
-  const {valid} = await isValid.value.validate();
+  const valid = await isValid.value.validate();
   try {
     if (valid) {
       const url = "/api/auth/login/member";
@@ -193,7 +193,7 @@ const memberLogin = async() => {
 }
 
 const mercenaryLogin = async() => {
-  const {valid} = await isValid.value.validate();
+  const valid = await isValid.value.validate();
   try {
     if (valid) {
       const url = "/api/auth/login/mercenary";

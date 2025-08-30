@@ -95,7 +95,7 @@ const isFormValid = () => {
 };
   
 const updatePassword = async () => {
-  const {valid} = await isValid.value.validate();  
+  const valid = await isValid.value.validate();  
   try {
     isLoading.value = true;
     if (valid) {
