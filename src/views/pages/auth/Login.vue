@@ -6,7 +6,7 @@
           <v-card-title class="text-h5 text-center mb-4">
             로그인
           </v-card-title>
-          <v-form fast-fail ref="isValid">
+          <v-form fast-fail ref="isValid" @submit.prevent="login">
             <div class="login-wrap">
               <v-text-field
                 v-model="mobile"
@@ -22,8 +22,8 @@
                 <v-text-field 
                   v-if="isLoginMember"
                   v-model="password"
-                  label="비밀번호"
-                  placeholder="비밀번호"
+                  label="회원 비밀번호"
+                  placeholder="회원 비밀번호"
                   type="password"
                   required
                   outlined
@@ -43,8 +43,13 @@
               </div>
             </div>
 
-            <v-btn color="primary" class="mt-4" block @click="executeButtonAction">
-                <span>{{ buttonText }}</span>
+            <v-btn 
+              type="submit"
+              class="mt-4"
+              color="primary" 
+              block
+            >
+              <span>{{ buttonText }}</span>
             </v-btn>
 
             <div class="text-center mt-4"> 
@@ -103,6 +108,7 @@ import { useTokenStore } from "@/store/auth";
 import { useUserInfoStore } from "@/store/user";
 import SignupEditPop from '@/views/pages/users/pop/SignupEditPop.vue';
 import ResetCredentialsPop from "@/views/pages/auth/pop/ResetCredentialsPop.vue";
+import { valid } from "@/utils/util-regex";
 
 const router = useRouter();
 const $token = useTokenStore();
@@ -117,7 +123,6 @@ const isShowVerifyInput = ref(false);
 const mercenaryCode = ref("");
 const isValid = ref(null);
 const isLoginMember = ref(true);
-const mobileRuleConfig = /^010\d{8}$/;
 
 const buttonText = computed(() => {
   if (isShowVerifyInput.value) {
@@ -131,7 +136,7 @@ const buttonText = computed(() => {
 });
 
 const mobileRules = [
-  v => mobileRuleConfig.test(v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
+  v => valid("MOBILE", v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
 const hideSignup = () => {
@@ -152,12 +157,14 @@ const hideResetCredentials = () => {
   isShowResetCredentials.value = false;
 }
 
-const executeButtonAction = () => {
+const login = () => {
   if (!isShowVerifyInput.value) {
-    isShowVerifyInput.value = true;
+    if (valid("MOBILE", mobile.value))
+      isShowVerifyInput.value = true;
     return;
-  } 
-  if (isLoginMember.value) memberLogin();
+  }
+  if (isLoginMember.value) 
+    memberLogin();
   else mercenaryLogin();
 
 }
