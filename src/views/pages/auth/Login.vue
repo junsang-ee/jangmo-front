@@ -10,13 +10,14 @@
             <div class="login-wrap">
               <v-text-field
                 v-model="mobile"
+                class="mobile-field"
                 label="휴대폰 번호"
                 placeholder="휴대폰 번호 11자리('-' 제외)"
                 type="tel"
                 :rules="mobileRules"
                 required
                 outlined
-                class="mobile-field"
+                autofocus
               />
               <div v-if="isShowVerifyInput">
                 <v-text-field 
