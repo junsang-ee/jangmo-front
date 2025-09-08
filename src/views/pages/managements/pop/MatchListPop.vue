@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600px">
+  <v-dialog v-model="isShowDialog" max-width="600px">
     <v-card class="pa-4">
       <v-card-title class="headline font-weight-bold">매치 선택</v-card-title>
       <v-divider class="my-2" />
@@ -35,8 +35,8 @@
                   <v-btn
                     color="primary"
                     class="create-match-btn"
-                    @click="createMatch"
-                    text="매치 생성하기"
+                    @click="goCreateMatchPage"
+                    text="매치 생성"
                   />
                 </div>
               </v-list-item-content>
@@ -46,7 +46,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="close">닫기</v-btn>
+        <v-btn 
+          @click="close"
+          text="닫기"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -54,19 +57,24 @@
 
 <script setup>
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
-import { read, update } from "@/utils/util-axios.js";
+import { update } from "@/utils/util-axios.js";
+import { useRouter, useRoute } from "vue-router";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
+
+const router = useRouter();
 
 const props = defineProps({
   mercenaryId: String,
+  required: true
 });
+
 const emit = defineEmits(["close", "approved"]);
 
-const dialog = ref(true);
+const isShowDialog = ref(true);
 const matchList = ref([]);
 
 const close = () => {
-  dialog.value = false;
+  isShowDialog.value = false;
   emit("close");
 };
 
@@ -75,7 +83,7 @@ const formatDate = (dateStr) => {
 };
 
 const handleMatch = async (matchId) => {
-  const confirmed = confirm("해당 매치에 이 용병을 매칭시키겠습니까?");
+  const confirmed = confirm("해당 매치에 용병을 매칭시키겠습니까?");
   if (!confirmed) return;
 
   try {
@@ -83,12 +91,17 @@ const handleMatch = async (matchId) => {
       matchId: matchId,
     });
     alert("용병 매칭 및 가입 승인이 완료되었습니다.");
-    dialog.value = false;
+    isShowDialog.value = false;
     emit("approved");
   } catch (e) {
     alert(e.message);
   }
 };
+
+const goCreateMatchPage = () => {
+  router.replace({name: "MatchManagement"});
+  close();
+}
 
 onMounted(() => {
 
