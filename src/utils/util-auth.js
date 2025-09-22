@@ -3,9 +3,8 @@ import { jwtDecode } from "jwt-decode";
 const tokenValidator = (token) => {
     if (token) {
       let decodedToken = jwtDecode(token);
-      let expireAt = new Date(0);
-      expireAt.setUTCSeconds(decodedToken.exp);
-      if (Date.now() < expireAt) {
+      let expireAt = new Date(decodedToken.exp * 1000);
+      if (Date.now() < expireAt.getTime()) {
         return token;
       } else {
         alert("세션이 만료되었습니다.");

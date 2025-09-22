@@ -22,7 +22,7 @@
 
 <script setup>
 
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, ref } from "vue";
 import HeaderLayout from '@/views/layouts/HeaderLayout.vue';
 import MobileNavigationBar from '@/views/layouts/MobileNavigationBar.vue';
 import WebNavigationBar from '@/views/layouts/WebNavigationBar.vue';
@@ -44,28 +44,33 @@ const router = useRouter();
 
 router.beforeEach((to, from, next) => {
   document.title = "JangmoFC";
+
   if (to?.name?.startsWith("Login")) {
-    $auth.reset()
+    $auth.reset();
     $userInfo.reset();
     $navigation.closeMenu();
-    next();
-  } else if (to?.name?.startsWith("Dashboard")) {
-    $navigation.closeMenu();
-    next();
+    return next();
   } else {
+    if (to?.name?.startsWith("Dashboard")) {
+      $navigation.closeMenu();
+    }
     try {
       if (tokenValidator($auth.getToken())) {
         next();
       }
-    } catch(toPath) {
+    } catch (toPath) {
       if (from.name === "Login") {
         next(false);
       } else {
-        next({name: toPath});
+        next({ name : toPath});
       }
     }
   }
-})
+
+
+
+
+});
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 768;

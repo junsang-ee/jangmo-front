@@ -50,12 +50,14 @@ const vueAxios = {
       },
       (error) => {
         $loading.setLoading(false);
-        const response = error.response;
+        const { response } = error;
+        if (!response)
+          return Promise.reject(new Error("현재 서버 상태가 정상적이지 않습니다. 잠시후 다시 시도하세요."));
 
-        if (!response?.data)
+        if (!response.data)
           return Promise.reject(error);
 
-        const {code, message} = error.response.data;
+        const { code, message } = response.data;
         const err = new Error(message || "알 수 없는 에러가 발생하였습니다.");
         err.code = code;
         if (response.status === 401) {
