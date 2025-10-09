@@ -1,68 +1,81 @@
 <template>
-  <v-container class="user-detail-container" fluid>
-    <h2 class="title">계정 관리</h2>
-    <v-row class="info-row">
-      <v-col cols="12">
-        <div class="field-container">
-          <div class="label">이름</div>
-            <v-card class="value-card">
-              <v-card-text>{{ name }}</v-card-text>
-            </v-card>
-          </div>
-      </v-col>
-      <v-col cols="12">
-        <div class="field-container">
-          <div class="label">생년월일</div>
-            <v-card class="value-card">
-              <v-card-text>{{ birth }}</v-card-text>
-            </v-card>
-          </div>
-      </v-col>
-      <v-col cols="12">
-        <div class="field-container">
-          <div class="label">전화번호</div>
-          <v-card class="value-card">
-            <v-card-text>{{ mobile }}</v-card-text>
-          </v-card>
-        </div>
-      </v-col>
-
-      <v-col cols="12">
-        <div class="field-container">
-          <div class="label">주소</div>
-          <v-card class="value-card value-card-with-action">
-            <v-card-text>{{ address }}</v-card-text>
-            <v-btn 
-              class="modify-address-btn" 
-              @click="openModifyAddressDialog" 
-              color="primary" 
-              outlined
-              text="주소 변경"
-            />
-          </v-card>
-        </div>
-      </v-col>
-      <v-col cols="12">
-        <div class="field-container">
-          <div class="label">생성 날짜</div>
-          <v-card class="value-card">
-            <v-card-text>{{ createdAt }}</v-card-text>
-          </v-card>
-        </div>
-      </v-col>
-
-      <v-col cols="12" class="actions">
-        <div class="action-item">
-          <update-password-pop />
-        </div>
-        <div class="action-item">
-          <v-btn class="logout-btn" @click="confirmLogout" color="warning" outlined>로그아웃</v-btn>
-        </div>
-        <div class="action-item">
-          <v-btn class="retire-btn" @click="confirmAccountDelete" color="error" outlined>회원 탈퇴</v-btn>
-        </div>
+  <v-container fluid>
+    <v-row justify="center" class="mb-4">
+      <v-col cols="12" sm="10" md="8">
+        <v-card class="pa-4 elevation-2 d-flex align-center title-card">
+          <v-icon size="32" color="primary" class="mr-3">mdi-account-circle</v-icon>
+          <v-card-title class="text-h5 font-weight-bold mb-0">계정 관리</v-card-title>
+        </v-card>
       </v-col>
     </v-row>
+
+    <v-row justify="center">
+      <v-col cols="12" sm="10" md="8">
+        <v-card class="pa-4 elevation-1 rounded-lg section-card">
+          <v-row dense>
+            <v-col cols="12">
+              <div class="label">이름</div>
+              <v-card class="value-card">
+                <v-card-text class="value-text">{{ name }}</v-card-text>
+              </v-card>
+            </v-col>
+
+            <v-col cols="12">
+              <div class="label">생년월일</div>
+              <v-card class="value-card">
+                <v-card-text class="value-text">{{ birth }}</v-card-text>
+              </v-card>
+            </v-col>
+
+            <v-col cols="12">
+              <div class="label">전화번호</div>
+              <v-card class="value-card">
+                <v-card-text class="value-text">{{ mobile }}</v-card-text>
+              </v-card>
+            </v-col>
+
+            <v-col cols="12">
+              <div class="label">주소</div>
+              <v-card class="value-card value-card-with-action">
+                <v-card-text class="value-text">{{ address }}</v-card-text>
+                <v-btn 
+                  class="modify-address-btn" 
+                  @click="openModifyAddressDialog" 
+                  color="primary" 
+                  variant="outlined"
+                  text="주소 변경"
+                />
+              </v-card>
+            </v-col>
+
+            <v-col cols="12">
+              <div class="label">생성 날짜</div>
+              <v-card class="value-card">
+                <v-card-text class="value-text">{{ createdAt }}</v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-divider class="my-4"></v-divider>
+          <v-row dense>
+            <v-col cols="12" class="d-flex justify-center mb-2">
+              <update-password-pop />
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center mb-2">
+              <v-btn class="logout-btn" @click="confirmLogout" color="warning" variant="outlined">
+                로그아웃
+              </v-btn>
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center">
+              <v-btn class="retire-btn" @click="confirmAccountDelete" color="error" variant="outlined">
+                회원 탈퇴
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-dialog v-model="isShowModifyAddress" max-width="500px" persistent :click-outside="false">
       <v-card>
         <v-card-title class="title-text">주소 변경</v-card-title>
@@ -125,27 +138,30 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { read, update } from "@/utils/util-axios.js";
-import { useRouter, useRoute } from "vue-router";
+import { read, update, remove } from "@/utils/util-axios.js";
+import { useRouter } from "vue-router";
 import { useUserInfoStore } from "@/store/user";
 import { useTokenStore } from "@/store/auth";
 import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
 import UpdatePasswordPop from "@/views/pages/users/pop/UserUpdatePasswordPop.vue";
-import {autoMobileHyphen, replaceBirthHyphen} from "@/utils/util-unit";
+import { autoMobileHyphen, replaceBirthHyphen } from "@/utils/util-unit";
 
 const router = useRouter();
 const $userInfo = useUserInfoStore();
 const $auth = useTokenStore();
+
 const name = ref("");
 const mobile = ref("");
 const createdAt = ref(null);
 const address = ref("");
 const birth = ref("");
+
 const cities = ref([]);
 const districts = ref([]);
 const selectedCity = ref(null);
 const selectedDistrict = ref(null);
 const isAddressValid = ref(false);
+
 const memberDetail = ref({
   name: "",
   mobile: "",
@@ -157,24 +173,11 @@ const memberDetail = ref({
   districtName: ""
 });
 
-const dialog = ref(false);
 const isShowModifyAddress = ref(false);
-const newMobile = ref("");
-const verificationCode = ref("");
-const verificationSent = ref(false);
-const isValid = ref(false);
 const isLoading = ref(false);
-const cityRule = [
-  v => !!v || "시/도를 선택해주세요."
-];
 
-const districtRule = [
-  v => !!v || "시/군/구를 선택해주세요."
-];
-
-const openDialog = () => {
-  dialog.value = true;
-};
+const cityRule = [v => !!v || "시/도를 선택해주세요."];
+const districtRule = [v => !!v || "시/군/구를 선택해주세요."];
 
 const openModifyAddressDialog = async() => {
   isShowModifyAddress.value = true;
@@ -185,29 +188,8 @@ const openModifyAddressDialog = async() => {
 }
 const closeModifyAddressDialog = () => isShowModifyAddress.value = false;
 
-const closeDialog = () => {
-  dialog.value = false;
-  newMobile.value = "";
-  verificationCode.value = "";
-  verificationSent.value = false;
-};
-
-const sendVerificationCode = () => {
-  verificationSent.value = true;
-};
-
-const confirmPhoneChange = () => {
-  mobile.value = newMobile.value;
-  closeDialog();
-};
-
-const findCity = (cityId) => {
-  return cities.value.find(city => city.cityId === cityId);
-}
-
-const findDistrict = (districtId) => {
-  return districts.value.find(district => district.districtId === districtId);
-}
+const findCity = (cityId) => cities.value.find(city => city.cityId === cityId);
+const findDistrict = (districtId) => districts.value.find(district => district.districtId === districtId);
 
 const confirmAccountDelete = async() => {
   if (confirm("회원 탈퇴를 할 경우, 즉시 모든 데이터가 삭제됩니다. 그래도 회원 탈퇴를 하시겠습니까?")) {
@@ -223,16 +205,15 @@ const confirmLogout = () => {
   if (confirm("로그아웃 하시겠습니까?")) {
     $auth.reset();
     $userInfo.reset();
+    router.replace("Login");
   }
-  router.replace("Login");
+  
 }
 
 const getIsEnabledModifyAddress = () => {
-  if (!selectedCity.value || !selectedDistrict.value) {
-    return false;
-  }
+  if (!selectedCity.value || !selectedDistrict.value) return false;
   return !(memberDetail.value.cityId === selectedCity.value.cityId &&
-      memberDetail.value.districtId === selectedDistrict.value.districtId);
+           memberDetail.value.districtId === selectedDistrict.value.districtId);
 }
 
 const loadInfo = async() => {
@@ -281,9 +262,7 @@ const modifyAddress = async() => {
   const valid = await isAddressValid.value.validate(); 
   try {
     if (valid) {
-      if (confirm(selectedCity.value.name + " " + 
-                  selectedDistrict.value.name + 
-                  " (으)로 주소를 변경하시겠습니까?")) {
+      if (confirm(`${selectedCity.value.name} ${selectedDistrict.value.name}(으)로 주소를 변경하시겠습니까?`)) {
         await update("/api/users/members/address", null, {
           cityId: selectedCity.value.cityId,
           districtId: selectedDistrict.value.districtId
@@ -296,7 +275,6 @@ const modifyAddress = async() => {
   } catch(e) {
     alert(e.message);
   }
-
 }
 
 const getMemberDetail = async() => {
@@ -309,51 +287,45 @@ const getMemberDetail = async() => {
 }
 
 watch(() => selectedCity.value, (val) => {
-  selectedDistrict.value = null;
-  getDistricts(val.cityId);
+  if (val) {
+    selectedDistrict.value = null;
+    getDistricts(val.cityId);
+  }
 });
 
 onMounted(() => {
   loadInfo();
 });
-
 </script>
 
 <style scoped>
-.user-detail-container {
-  padding: 30px;
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #f9f9f9;
+.title-card {
+  background-color: #f5f7fa;
+  border-radius: 16px;
 }
 
-.title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 25px;
-  text-align: center;
-  color: #333;
-}
-
-.info-row {
-  margin-bottom: 16px;
-}
-
-.field-container {
-  margin-bottom: 20px;
+.section-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
 }
 
 .label {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #222;
+}
+
+.value-text {
+  font-size: 15px;
+  font-weight: 500;
   color: #333;
-  margin-bottom: 8px;
 }
 
 .value-card {
-  background-color: #f2f2f2;
-  padding: 16px;
-  border-radius: 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 10px 14px;
   box-shadow: none;
 }
 
@@ -363,61 +335,40 @@ onMounted(() => {
   align-items: center;
 }
 
-.value-card-with-action .modify-address-btn {
-  margin-left: 20px;
-  font-size: 0.9rem;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  line-height: normal;
-  padding: 12px 12px;
-  min-width: 100px;
-  text-align: center; 
-  color: #1e88e5;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border: 1px solid #1e88e5;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.action-item {
-  margin-top: 16px;
-  text-align: center;
-}
-
-.retire-btn,
-.logout-btn {
-  font-size: 1rem;
-  padding: 12px 12px;
-  font-weight: 500;
-  min-width: 250px;
+.modify-address-btn {
+  margin-left: 12px;
 }
 
 .title-text {
-  text-align: center;
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: bold;
+  text-align: center;
 }
 
 .address-wrap {
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  gap: 12px;
 }
 
-.confirm-modify-address-btn, .close-address-btn {
-  text-align: center; 
-  min-width: 80px;
-  font-size: 14px;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+.logout-btn, .retire-btn {
+  min-width: 200px;
 }
 
-.v-btn {
-  display: inline-flex;
+.v-col {
+  margin-bottom: 20px;
 }
 
+@media (max-width: 768px) {
+  .label {
+    font-size: 15px;
+  }
+  .value-text {
+    font-size: 14px;
+  }
+  .v-col {
+    margin-bottom: 16px;
+  }
+}
 </style>
+
