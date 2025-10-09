@@ -87,11 +87,10 @@
 
 <script setup>
 import { ref, computed, defineProps, onMounted } from 'vue';
-import { read, write, update } from '@/utils/util-axios.js';
+import { write, update } from '@/utils/util-axios.js';
 import { valid } from "@/utils/util-regex";
 
 const dialog = ref(true);
-const formRef = ref(null);
 const isValid = ref(false);
 const mobile = ref("");
 const verificationCode = ref("");

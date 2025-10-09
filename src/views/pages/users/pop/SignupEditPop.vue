@@ -611,7 +611,7 @@ const closeContentDialog = () => {
 };
 
 const registerMercenary = async() => {
-  const {valid} = await isValid.value.validate();
+  const valid = await isValid.value.validate();
   try {
     if (valid) {
       const payload = {
@@ -630,7 +630,7 @@ const registerMercenary = async() => {
 }
 
 const signupMember = async() => {
-  const {valid} = await isValid.value.validate();
+  const valid = await isValid.value.validate();
   try {
     if (valid) {
       const payload = {

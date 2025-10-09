@@ -96,7 +96,7 @@ const searchPlace = async () => {
   if (!keyword.value.trim()) return;
 
   try {
-    const response = await read(`/api/managers/ground/${keyword.value}`)
+    const response = await read(`/api/managers/grounds/${keyword.value}`)
     const places = response;
     if (places && places.length > 0) {
       clearMarkers()
