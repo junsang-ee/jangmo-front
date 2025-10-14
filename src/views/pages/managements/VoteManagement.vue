@@ -34,8 +34,7 @@
     <VoteCreatePop 
       v-if="isShowCreateVotePop"
       @close="closeVoteCreatePop"
-      :startDate="voteStartAt"
-      :endDate="voteEndAt"
+      :initialVoteEndDate="voteEndAt"
     />
   </v-container>
 </template>
