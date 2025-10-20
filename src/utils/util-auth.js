@@ -7,7 +7,9 @@ const tokenValidator = (token) => {
       if (Date.now() < expireAt.getTime()) {
         return token;
       } else {
-        alert("세션이 만료되었습니다.");
+        (async () => {
+          await $alert('세션이 만료되었습니다.');
+        })();
         throw "Login";
       }
     } else {

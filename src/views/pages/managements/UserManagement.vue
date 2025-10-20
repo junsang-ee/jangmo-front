@@ -182,7 +182,9 @@ const getMember = async(userId) => {
   try {
     const response = await read(`/api/managers/members/${userId}`);
     return response;
-  } catch(e) { alert(e.message); }
+  } catch(e) { 
+    await $alert(e.message); 
+  }
 }
 
 const getMercenary = async(userId) => {
@@ -190,7 +192,7 @@ const getMercenary = async(userId) => {
     const response = await read(`/api/managers/mercenaries/${userId}`);
     return response;
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -208,7 +210,7 @@ const getUsers = async() => {
     userList.value = response.list;
     totalCount.value = response.totalCount;
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   } finally { 
     isLoading.value = false;
   }

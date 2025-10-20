@@ -520,10 +520,10 @@ const sendVerificationCode = async() => {
     currentStep.value = SignupState.ENTER_CODE;
     isDisabledMobile.value = true;
     startTimer();
-    alert("인증번호가 전송되었습니다.");
+    await $alert("인증번호가 전송되었습니다.");
   } catch(e) {
     isShowVerificationField.value = false;
-    alert(e.message);
+    await $alert(e.message);
   }
 };
 
@@ -532,7 +532,7 @@ const getCities = async() => {
     const response = await read("/api/locations/cities");
     cities.value = response;
   } catch (e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -541,7 +541,7 @@ const getDistricts = async(cityId) => {
     const response = await read(`/api/locations/cities/${cityId}/districts`);
     districts.value = response;
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -567,12 +567,12 @@ const verifyCode = async() => {
       mobile: mobile.value,
       authPurposeType: authPurposeType.value
     });
-    alert("정상적으로 인증되었습니다.");
+    await $alert("정상적으로 인증되었습니다.");
     stopTimer();
     currentStep.value = SignupState.ENTER_DETAIL;
     getCities();
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 const validateNumericInput = () => {
@@ -621,11 +621,11 @@ const registerMercenary = async() => {
         retentionStatus: retentionStatus.value
       };
       await write("/api/auth/register/mercenary", null, payload);
-      alert("용병 등록 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
+      await $alert("용병 등록 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
       emit("close");
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -643,11 +643,11 @@ const signupMember = async() => {
         districtId: selectedDistrict.value.districtId,
       };
       await write("/api/auth/signup/member", null, payload);
-      alert("회원가입 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
+      await $alert("회원가입 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
       emit("close");
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 

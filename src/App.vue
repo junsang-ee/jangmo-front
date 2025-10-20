@@ -66,10 +66,6 @@ router.beforeEach((to, from, next) => {
       }
     }
   }
-
-
-
-
 });
 
 const handleResize = () => {

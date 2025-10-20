@@ -67,7 +67,9 @@ const closeSearchPop = () => {
 }
 
 const viewDetail = (item) => {
-  alert(`📍 ${item.name}\n📌 ${item.address}`)
+  (async () => {
+    await $alert(`📍 ${item.name}\n📌 ${item.address}`);
+  })();
 };
 
 const addGround = async(groundInfo) => {
@@ -75,7 +77,7 @@ const addGround = async(groundInfo) => {
     await write("/api/managers/", null, groundInfo);
     
   }catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
   groundList.value.push(ground);
 };

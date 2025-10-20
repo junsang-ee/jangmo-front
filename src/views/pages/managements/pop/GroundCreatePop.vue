@@ -92,7 +92,9 @@ const setGroundInfo = (val) => {
 
 const addGround = () => {
   if (!groundInfo.groundType) {
-    alert("구장 타입을 선택하세요");
+    (async () => {
+      await $alert("구장 타입을 선택하세요");
+    })();
     return;
   }
   if (confirm(groundInfo.value.placeName + " (를)을 추가하시겠습니까?")) {

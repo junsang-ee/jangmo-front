@@ -195,11 +195,11 @@ const requestCode = async() => {
       mobile: mobile.value,
       authPurposeType: authPurposeType.value
     });
-    alert("인증번호가 전송되었습니다.");
+    await $alert("인증번호가 전송되었습니다.");
     isCodeSent.value = true;
     startTimer();
   } catch (e) {
-    alert(e.message || "인증번호 전송 실패");
+    await $alert(e.message || "인증번호 전송 실패");
   }
 };
 
@@ -210,11 +210,11 @@ const verifyCode = async() => {
       code: verificationCode.value,
       authPurposeType: authPurposeType.value
     });
-    alert("정상적으로 인증 되었습니다.");
+    await $alert("정상적으로 인증 되었습니다.");
     isVerified.value = true;
     stopTimer();
   } catch (e) {
-    alert(e.message || "인증 실패");
+    await $alert(e.message || "인증 실패");
   }
 };
 
@@ -224,11 +224,11 @@ const resetMercenaryCode = async() => {
       await update("/api/auth/mercenaries/code", null, {
         mobile: mobile.value
       });
-      alert("용병 코드가 정상적으로 전송되었습니다. 전송된 코드로 로그인 해주세요.");
+      await $alert("용병 코드가 정상적으로 전송되었습니다. 전송된 코드로 로그인 해주세요.");
       closeDialog();
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -241,12 +241,12 @@ const resetPassword = async() => {
           mobile: mobile.value,
           password: newPassword.value,
         });
-        alert("비밀번호가 성공적으로 재설정되었습니다.");
+        await $alert("비밀번호가 성공적으로 재설정되었습니다.");
         closeDialog();
       }
     }
   } catch (e) {
-    alert(e.message || "비밀번호 재설정 실패");
+    await $alert(e.message || "비밀번호 재설정 실패");
   }
 };
 

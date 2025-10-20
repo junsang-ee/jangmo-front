@@ -116,8 +116,8 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, computed, onMounted } from "vue";
-import { write } from "@/utils/util-axios.js";
+import { ref, watch, defineProps, defineEmits, computed, onMounted } from 'vue';
+import { write } from '@/utils/util-axios.js';
 
 const props = defineProps({
   initialVoteEndDate: {
@@ -126,16 +126,16 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close']);
 
 const dialog = ref(true);
 const isValid = ref(null);
-const title = ref("");
-const voteType = ref("매치 투표");
-const isMatchVote = computed(() => voteType.value === "매치 투표");
-const matchType = ref("FUTSAL");
+const title = ref('');
+const voteType = ref('매치 투표');
+const isMatchVote = computed(() => voteType.value === '매치 투표');
+const matchType = ref('FUTSAL');
 const allowDuplicate = ref(false);
-const matchTypeRule = [v => !!v || "매치 타입을 선택해주세요."];
+const matchTypeRule = [v => !!v || '매치 타입을 선택해주세요.'];
 
 const voteEndDate = ref(null);
 const matchDate = ref(null);
@@ -216,11 +216,11 @@ const createVote = async () => {
 
       if (isMatchVote.value) {
         if (!matchType.value) {
-          alert("매치 타입을 선택해주세요.");
+          await $alert('매치 타입을 선택해주세요.');
           return;
         }
         if (!formattedMatchAt) {
-          alert("매치일을 선택해주세요.");
+          await $alert('매치일을 선택해주세요.');
           return;
         }
         await write("/api/managers/votes/matches", null, {
@@ -230,23 +230,23 @@ const createVote = async () => {
           endAt: formattedVoteEndAt,
           modeType: allowDuplicate.value ? "MULTIPLE" : "SINGLE"
         });
-        alert("매치 투표가 정상적으로 생성되었습니다.");
+        await $alert("매치 투표가 정상적으로 생성되었습니다.");
       } else {
         await write("/api/managers/votes/general", null, {
           title: title.value,
           endAt: formattedVoteEndAt,
           modeType: allowDuplicate.value ? "MULTIPLE" : "SINGLE"
         });
-        alert("일반 투표가 정상적으로 생성되었습니다.");
+        await $alert("일반 투표가 정상적으로 생성되었습니다.");
       }
 
       closeDialog();
     } else {
-      alert("입력값을 확인해주세요.");
+      await $alert("입력값을 확인해주세요.");
     }
   } catch (e) {
     console.error("투표 생성 오류:", e);
-    alert(`투표 생성 중 오류가 발생했습니다: ${e.message || e}`);
+    await $alert(`투표 생성 중 오류가 발생했습니다: ${e.message || e}`);
   }
 };
 
@@ -272,7 +272,9 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const voteEndAt = new Date(newVoteEndDate);
     voteEndAt.setHours(0, 0, 0, 0);
     if (voteEndAt < today) {
-      alert("투표 마감일은 현재 날짜보다 이후여야 합니다.");
+      (async () => {
+        await $alert('투표 마감일은 현재 날짜보다 이후여야 합니다.');
+      })();
       voteEndDate.value = null;
       isSelectVoteEndAt.value = true;
       return;
@@ -283,7 +285,9 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const matchAt = new Date(newMatchDate);
     matchAt.setHours(0, 0, 0, 0);
     if (matchAt < today) {
-      alert("매치일은 현재 날짜보다 이후여야 합니다.");
+      (async () => {
+        await $alert('매치일은 현재 날짜보다 이후여야 합니다.');
+      })();
       matchDate.value = null;
       isSelectMatchAt.value = true;
       return;
@@ -294,7 +298,9 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const voteEndAt = new Date(newVoteEndDate);
     const matchAt = new Date(newMatchDate);
     if (voteEndAt >= matchAt) {
-      alert("투표 마감일은 매치일 이전이어야 합니다.");
+      (async () => {
+        await $alert('투표 마감일은 매치일 이전이어야 합니다.');
+      })();
       voteEndDate.value = null;
       isSelectVoteEndAt.value = true;
       return;

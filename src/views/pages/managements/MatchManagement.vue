@@ -62,13 +62,17 @@ const calendarOptions = ref({
   })),
   eventClick: (info) => {
     const dateStr = info.event.start.toISOString().split('T')[0];
-    alert(dateStr);
+    (async () => {
+      await $alert(dateStr);
+    })();
     // onDayClick();
   },
   dateClick: (info) => {
+    (async () => {
+      await $alert(info.dateStr);
+    })();
     // onDayClick();
-    alert(info.dateStr);
-    selectedDate.value = info.dateStr
+    selectedDate.value = info.dateStr;
   },
   headerToolbar: {
     left: "prev",
@@ -86,7 +90,9 @@ const onDayClick = () => {
 
 const createMatch = () => {
   if (selectedDate.value == null) {
-    alert("매치를 생성할 날짜를 먼저 선택해주세요.");
+    (async () => {
+      await $alert('매치를 생성할 날짜를 먼저 선택해주세요.');
+    })();
     return;
   }
   if (confirm("매치를 생성하기 위해서는 투표 생성이 선행되어야 합니다. 매치 투표 생성 페이지로 이동합니다.")) {

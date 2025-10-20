@@ -191,11 +191,11 @@ const memberLogin = async() => {
       };
       const result = await write(url, null, login);
       setUserDetail(result);
-      alert("회원 권한으로 정상 로그인 되었습니다.");
+      await $alert("회원 권한으로 정상 로그인 되었습니다.");
       router.replace({name: "Dashboard"});
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 
 }
@@ -211,11 +211,11 @@ const mercenaryLogin = async() => {
       };
       const result = await write(url, null, loginPayload);
       setUserDetail(result);
-      alert("용병 권한으로 정상 로그인 되었습니다.");
+      await $alert("용병 권한으로 정상 로그인 되었습니다.");
       router.replace({name: "Dashboard"});
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 

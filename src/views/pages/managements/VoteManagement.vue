@@ -101,7 +101,9 @@ const calendarOptions = ref({
         (e) => info.dateStr >= e.start && info.dateStr <= e.end
       );
       if (event) {
-        alert(`투표 상세: ${event.title}\n기간: ${event.start} ~ ${event.end}`);
+        (async () => {
+          await $alert(`투표 상세: ${event.title}\n기간: ${event.start} ~ ${event.end}`);
+        })();
       }
     }
   },
@@ -111,7 +113,9 @@ const calendarOptions = ref({
 
     const startDate = new Date(selectionInfo.start);
     if (formatDate(startDate) !== formatDate(today)) {
-      alert("투표 시작일은 현재 날짜여야 합니다.");
+      (async () => {
+        await $alert('투표 시작일은 현재 날짜여야 합니다.');
+      })();
       return;
     }
     const endDate = new Date(selectionInfo.end);
@@ -145,7 +149,9 @@ const formatDate = (date) => {
 
 const toggleCreateMode = () => {
   if (!isCreatingVote.value) {
-    alert("투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)");
+    (async () => {
+      await $alert("투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)");
+    })();
   }
   isCreatingVote.value = !isCreatingVote.value;
 };

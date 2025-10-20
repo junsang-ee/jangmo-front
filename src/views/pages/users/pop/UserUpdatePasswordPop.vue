@@ -105,11 +105,11 @@ const updatePassword = async () => {
       });
     }
     isLoading.value = false;
-    alert("비밀번호가 정상적으로 변경되었습니다.");
+    await $alert("비밀번호가 정상적으로 변경되었습니다.");
     close();
   } catch (e) {
     isLoading.value = false;
-    alert(e.message);
+    await $alert(e.message);
   }
 };
 

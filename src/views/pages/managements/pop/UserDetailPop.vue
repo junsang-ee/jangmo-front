@@ -127,14 +127,18 @@ const getMember = async() => {
   try {
     const response = await read(`/api/managers/members/${props.userId}`);
     userDetail.value = response;
-  } catch(e) { alert(e.message); }
+  } catch(e) { 
+    await $alert(e.message); 
+  }
 }
 
 const getMercenary = async() => {
   try {
     const response = await read(`/api/managers/mercenaries/${props.userId}`);
     userDetail.value = response;
-  } catch(e) {alert(e.message);}
+  } catch(e) { 
+    await $alert(e.message); 
+  }
 }
 
 const getAddressName = () => props.userDetail.cityName + " " + props.userDetail.districtName;
@@ -145,7 +149,7 @@ const approve = async() => {
       if (confirm("해당 회원의 가입 요청을 승인 하시겠습니까?")) {
         await update(`/api/managers/members/${props.userDetail.id}/approve`);
       }
-      alert("가입 승인이 완료되었습니다.");
+      await $alert("가입 승인이 완료되었습니다.");
       closeDialog();
     } else {
       if (confirm("승인 대기 상태인 용병은 가입 승인 전 매치 등록이 선행되어야 합니다. \n" + 
@@ -155,7 +159,7 @@ const approve = async() => {
       }
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 

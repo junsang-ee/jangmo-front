@@ -90,11 +90,11 @@ const handleMatch = async (matchId) => {
     await update(`/api/managers/mercenaries/${props.mercenaryId}/approve`, {
       matchId: matchId,
     });
-    alert("용병 매칭 및 가입 승인이 완료되었습니다.");
+    await $alert("용병 매칭 및 가입 승인이 완료되었습니다.");
     isShowDialog.value = false;
     emit("approved");
   } catch (e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 };
 

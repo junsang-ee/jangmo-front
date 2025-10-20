@@ -196,7 +196,7 @@ const confirmAccountDelete = async() => {
     try {
       await remove("/api/users/members/retire");
     } catch(e) {
-      alert(e.message);
+      await $alert(e.message);
     }
   }
 };
@@ -239,7 +239,7 @@ const getCities = async() => {
     selectedCity.value = findCity(memberDetail.value.cityId);
     isLoading.value = false;
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -252,7 +252,7 @@ const getDistricts = async(cityId) => {
       selectedDistrict.value = findDistrict(memberDetail.value.districtId);
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   } finally {
     isLoading.value = false;
   }
@@ -267,13 +267,13 @@ const modifyAddress = async() => {
           cityId: selectedCity.value.cityId,
           districtId: selectedDistrict.value.districtId
         });
-        alert("주소가 정상적으로 변경되었습니다.");
+        await $alert("주소가 정상적으로 변경되었습니다.");
         loadInfo();
         closeModifyAddressDialog();
       }
     }
   } catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
@@ -282,7 +282,7 @@ const getMemberDetail = async() => {
     const response = await read("/api/users/members/me");
     memberDetail.value = response;
   }catch(e) {
-    alert(e.message);
+    await $alert(e.message);
   }
 }
 
