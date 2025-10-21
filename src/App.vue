@@ -42,7 +42,7 @@ const $loading = useLoadingStore();
 const { menuVisible } = storeToRefs($navigation); 
 const router = useRouter();
 
-router.beforeEach((to, from, next) => {
+router.beforeEach( async(to, from, next) => {
   document.title = 'JangmoFC';
 
   if (to?.name?.startsWith('Login')) {
@@ -55,9 +55,8 @@ router.beforeEach((to, from, next) => {
       $navigation.closeMenu();
     }
     try {
-      if (tokenValidator($auth.getToken())) {
-        next();
-      }
+      await tokenValidator($auth.getToken());
+      next();
     } catch (toPath) {
       if (from.name === 'Login') {
         next(false);

@@ -185,19 +185,17 @@ const memberLogin = async() => {
   try {
     if (valid) {
       const url = '/api/auth/login/member';
-      const login = {
+      const result = await write(url, null, {
         mobile: mobile.value,
         password: password.value
-      };
-      const result = await write(url, null, login);
-      setUserDetail(result);
+      });
+      await setUserDetail(result);
       await $alert('회원 권한으로 정상 로그인 되었습니다.');
       router.replace({name: 'Dashboard'});
     }
   } catch(e) {
     await $alert(e.message);
   }
-
 }
 
 const mercenaryLogin = async() => {
@@ -205,12 +203,11 @@ const mercenaryLogin = async() => {
   try {
     if (valid) {
       const url = '/api/auth/login/mercenary';
-      const loginPayload = {
+      const result = await write(url, null, {
         mobile: mobile.value,
         mercenaryCode: mercenaryCode.value
-      };
-      const result = await write(url, null, loginPayload);
-      setUserDetail(result);
+      });
+      await setUserDetail(result);
       await $alert('용병 권한으로 정상 로그인 되었습니다.');
       router.replace({name: 'Dashboard'});
     }
@@ -220,7 +217,7 @@ const mercenaryLogin = async() => {
 }
 
 const setUserDetail = async(result) => {
-  const token = tokenValidator(result?.jwt);
+  const token = await tokenValidator(result?.jwt);
   $token.setToken(token);
   const myInfo = await read('/api/users/me');
   $userInfo.setInfo(myInfo);
