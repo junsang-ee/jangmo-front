@@ -83,18 +83,17 @@ const formatDate = (dateStr) => {
 };
 
 const handleMatch = async (matchId) => {
-  const confirmed = confirm("해당 매치에 용병을 매칭시키겠습니까?");
-  if (!confirmed) return;
-
-  try {
-    await update(`/api/managers/mercenaries/${props.mercenaryId}/approve`, {
-      matchId: matchId,
-    });
-    await $alert("용병 매칭 및 가입 승인이 완료되었습니다.");
-    isShowDialog.value = false;
-    emit("approved");
-  } catch (e) {
-    await $alert(e.message);
+  if (await $confirm('선택한 용병을 해당 매치에 배정하여 가입을 승인하시겠습니까?', '용병 매칭 승인')) {
+    try {
+      await update(`/api/managers/mercenaries/${props.mercenaryId}/approve`, {
+        matchId: matchId,
+      });
+      await $alert('용병 매칭 및 가입 승인이 완료되었습니다.');
+      isShowDialog.value = false;
+      emit('approved');
+    } catch (e) {
+      await $alert(e.message);
+    }
   }
 };
 

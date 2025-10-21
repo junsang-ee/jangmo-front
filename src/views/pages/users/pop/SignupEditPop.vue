@@ -549,8 +549,8 @@ const resendVerificationCode = async() => {
   await sendVerificationCode();
 };
 
-const modifyMobile = () => {
-  if (confirm("휴대폰 번호를 수정하시겠습니까?")) {
+const modifyMobile = async() => {
+  if (await $confirm('휴대폰 번호를 수정하시겠습니까?', '휴대폰 번호 수정')) {
     currentStep.value = SignupState.ENTER_MOBILE;
     isDisabledMobile.value = false;
     isShowVerificationField.value = false;
@@ -599,10 +599,10 @@ const validateNumericInput = () => {
 
 };
 
-const closeDialog = () => {
-  if (confirm("작성한 사항이 저장되지 않을 수 있습니다. 계속하시겠습니까?")) {
+const closeDialog = async() => {
+  if (await $confirm('작성한 사항이 저장되지 않을 수 있습니다. 계속하시겠습니까?')) {
     dialog.value = false;
-    emit("close");
+    emit('close');
   }
 };
 

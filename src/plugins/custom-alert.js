@@ -10,9 +10,10 @@ export default {
       render: () => h(AlertModal, { ref: 'alert' }),
     });
 
-    if (options.vuetify)
-     alertApp.use(options.vuetify);
-
+    if (options.vuetify) {
+      alertApp.use(options.vuetify);
+    }
+     
     const vm = alertApp.mount(container);
 
     app.config.globalProperties.$alert = (msg) => vm.$refs.alert.open(msg);

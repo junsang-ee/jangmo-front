@@ -66,10 +66,8 @@ const closeSearchPop = () => {
   isShowSearchPop.value = false;
 }
 
-const viewDetail = (item) => {
-  (async () => {
-    await $alert(`📍 ${item.name}\n📌 ${item.address}`);
-  })();
+const viewDetail = async(item) => {
+  await $alert(`📍 ${item.name}\n📌 ${item.address}`);
 };
 
 const addGround = async(groundInfo) => {

@@ -220,7 +220,7 @@ const verifyCode = async() => {
 
 const resetMercenaryCode = async() => {
   try {
-    if (confirm("용병 코드를 재발급 받으시겠습니까?")) {
+    if (await confirm('용병코드를 재발급 받으시겠습니까?', '용병코드 재발급')) {
       await update("/api/auth/mercenaries/code", null, {
         mobile: mobile.value
       });
@@ -236,7 +236,7 @@ const resetPassword = async() => {
   const valid = await isValid.value.validate();
   try {
     if (valid) {
-      if (confirm("입력하신 새로운 비밀번호로 재설정 하시겠습니까?")) {
+      if (await $confirm('입력하신 새로운 비밀번호로 재설정 하시겠습니까?', '비밀번호 재설정')) {
         await update("/api/auth/members/password", null, {
           mobile: mobile.value,
           password: newPassword.value,

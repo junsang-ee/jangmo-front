@@ -264,7 +264,7 @@ const toSimpleDateFormat = (date) => {
   return `${year}.${month}.${day} `;
 };
 
-watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
+watch([voteEndDate, matchDate], async([newVoteEndDate, newMatchDate]) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -272,9 +272,7 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const voteEndAt = new Date(newVoteEndDate);
     voteEndAt.setHours(0, 0, 0, 0);
     if (voteEndAt < today) {
-      (async () => {
-        await $alert('투표 마감일은 현재 날짜보다 이후여야 합니다.');
-      })();
+      await $alert('투표 마감일은 현재 날짜보다 이후여야 합니다.');
       voteEndDate.value = null;
       isSelectVoteEndAt.value = true;
       return;
@@ -285,9 +283,7 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const matchAt = new Date(newMatchDate);
     matchAt.setHours(0, 0, 0, 0);
     if (matchAt < today) {
-      (async () => {
-        await $alert('매치일은 현재 날짜보다 이후여야 합니다.');
-      })();
+      await $alert('매치일은 현재 날짜보다 이후여야 합니다.');
       matchDate.value = null;
       isSelectMatchAt.value = true;
       return;
@@ -298,9 +294,7 @@ watch([voteEndDate, matchDate], ([newVoteEndDate, newMatchDate]) => {
     const voteEndAt = new Date(newVoteEndDate);
     const matchAt = new Date(newMatchDate);
     if (voteEndAt >= matchAt) {
-      (async () => {
-        await $alert('투표 마감일은 매치일 이전이어야 합니다.');
-      })();
+      await $alert('투표 마감일은 매치일 이전이어야 합니다.');
       voteEndDate.value = null;
       isSelectVoteEndAt.value = true;
       return;

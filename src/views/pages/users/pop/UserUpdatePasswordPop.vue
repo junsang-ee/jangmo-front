@@ -94,7 +94,7 @@ const isFormValid = () => {
   );
 };
   
-const updatePassword = async () => {
+const updatePassword = async() => {
   const valid = await isValid.value.validate();  
   try {
     isLoading.value = true;

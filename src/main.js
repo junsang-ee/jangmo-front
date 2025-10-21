@@ -7,6 +7,7 @@ import App from '@/App.vue';
 import { vueAxios } from '@/plugins/axios-plugin';
 import vuetify from '@/plugins/vuetify';
 import AlertPlugin from '@/plugins/custom-alert';
+import ConfirmPlugin from '@/plugins/custom-confirm';
 
 
 const pinia = createPinia();
@@ -18,4 +19,5 @@ createApp(App)
     .use(vueAxios)
     .use(vuetify)
     .use(AlertPlugin, {vuetify})
+    .use(ConfirmPlugin, {vuetify})
     .mount('#app');

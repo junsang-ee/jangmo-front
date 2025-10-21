@@ -146,16 +146,15 @@ const getAddressName = () => props.userDetail.cityName + " " + props.userDetail.
 const approve = async() => {
   try {
     if (isMember.value) {
-      if (confirm("해당 회원의 가입 요청을 승인 하시겠습니까?")) {
+      if (await $confirm('해당 회원의 가입 요청을 승인하시겠습니까?', '회원 가입 승인')) {
         await update(`/api/managers/members/${props.userDetail.id}/approve`);
       }
       await $alert("가입 승인이 완료되었습니다.");
       closeDialog();
     } else {
-      if (confirm("승인 대기 상태인 용병은 가입 승인 전 매치 등록이 선행되어야 합니다. \n" + 
-        "매치 등록을 진행할까요?")) {
-          mercenaryId.value = props.userDetail.id;
-          openMatchListDialog();
+      if (await $confirm('승인 대기 상태인 용병은 매치 등록이 선행되어야 합니다.\n 매치 등록을 진행할까요?','용병 매치 등록')) {
+        mercenaryId.value = props.userDetail.id;
+        openMatchListDialog();
       }
     }
   } catch(e) {

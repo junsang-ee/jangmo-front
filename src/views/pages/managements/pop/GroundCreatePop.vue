@@ -90,14 +90,12 @@ const setGroundInfo = (val) => {
   groundInfo.value.districtId = val.districtId || null;
 }
 
-const addGround = () => {
+const addGround = async() => {
   if (!groundInfo.groundType) {
-    (async () => {
-      await $alert("구장 타입을 선택하세요");
-    })();
+    await $alert("구장 타입을 선택하세요");
     return;
   }
-  if (confirm(groundInfo.value.placeName + " (를)을 추가하시겠습니까?")) {
+  if (await $confirm(`${groundInfo.value.placeName}(를)을 추가하시겠습니까?`, '구장 추가')) {
     groundInfo.value.groundType = groundType.value;
     emit("add-ground", groundInfo.value);
     closeDialog();

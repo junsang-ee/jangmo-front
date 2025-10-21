@@ -88,14 +88,12 @@ const onDayClick = () => {
   matchDialog.value = true;
 };
 
-const createMatch = () => {
+const createMatch = async() => {
   if (selectedDate.value == null) {
-    (async () => {
-      await $alert('매치를 생성할 날짜를 먼저 선택해주세요.');
-    })();
+    await $alert('매치를 생성할 날짜를 먼저 선택해주세요.');
     return;
   }
-  if (confirm("매치를 생성하기 위해서는 투표 생성이 선행되어야 합니다. 매치 투표 생성 페이지로 이동합니다.")) {
+  if (await $confirm('매치 생성은 매치투표 생성이 선행되어야 합니다. 매치 투표 생성 페이지로 이동합니다.', '매치 투표 생성')) {
     
   }
 };

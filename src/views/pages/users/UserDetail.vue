@@ -192,7 +192,7 @@ const findCity = (cityId) => cities.value.find(city => city.cityId === cityId);
 const findDistrict = (districtId) => districts.value.find(district => district.districtId === districtId);
 
 const confirmAccountDelete = async() => {
-  if (confirm("회원 탈퇴를 할 경우, 즉시 모든 데이터가 삭제됩니다. 그래도 회원 탈퇴를 하시겠습니까?")) {
+  if (await $confirm('회원 탈퇴를 할 경우, 즉시 모든 데이터가 삭제됩니다. 그래도 회원 탈퇴를 하시겠습니까?', '회원 탈퇴')) {
     try {
       await remove("/api/users/members/retire");
     } catch(e) {
@@ -201,13 +201,12 @@ const confirmAccountDelete = async() => {
   }
 };
 
-const confirmLogout = () => {
-  if (confirm("로그아웃 하시겠습니까?")) {
+const confirmLogout = async() => {
+  if (await $confirm('로그아웃 하시겠습니까?', '로그아웃')) {
     $auth.reset();
     $userInfo.reset();
     router.replace("Login");
   }
-  
 }
 
 const getIsEnabledModifyAddress = () => {
@@ -262,7 +261,8 @@ const modifyAddress = async() => {
   const valid = await isAddressValid.value.validate(); 
   try {
     if (valid) {
-      if (confirm(`${selectedCity.value.name} ${selectedDistrict.value.name}(으)로 주소를 변경하시겠습니까?`)) {
+      let updateAddress = `${selectedCity.value.name} ${selectedDistrict.value.name}`;
+      if (await $confirm(`${updateAddress}(으)로 주소를 변경하시겠습니까?`, '주소 변경')) {
         await update("/api/users/members/address", null, {
           cityId: selectedCity.value.cityId,
           districtId: selectedDistrict.value.districtId

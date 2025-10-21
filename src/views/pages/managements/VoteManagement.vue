@@ -95,33 +95,30 @@ const calendarOptions = ref({
   height: "auto",
   expandRows: true,
 
-  dateClick: (info) => {
+  dateClick: async(info) => {
     if (!isCreatingVote.value) {
       const event = voteEvents.value.find(
         (e) => info.dateStr >= e.start && info.dateStr <= e.end
       );
       if (event) {
-        (async () => {
-          await $alert(`투표 상세: ${event.title}\n기간: ${event.start} ~ ${event.end}`);
-        })();
+        await $alert(`투표 상세: ${event.title}\n기간: ${event.start} ~ ${event.end}`);
       }
     }
   },
 
-  select: (selectionInfo) => {
+  select: async(selectionInfo) => {
     if (!isCreatingVote.value) return;
 
     const startDate = new Date(selectionInfo.start);
+
     if (formatDate(startDate) !== formatDate(today)) {
-      (async () => {
-        await $alert('투표 시작일은 현재 날짜여야 합니다.');
-      })();
+      await $alert('투표 시작일은 현재 날짜여야 합니다.');
       return;
     }
     const endDate = new Date(selectionInfo.end);
     endDate.setDate(endDate.getDate() - 1);
-    
-    if (confirm(`${formatDate(startDate)} ~ ${formatDate(endDate)}\n투표를 생성 하시겠습니까?`)) {
+    let votePeriod = `${formatDate(startDate)} ~ ${formatDate(endDate)}`;
+    if (await $confirm(`${votePeriod}\n투표를 생성 하시겠습니까?`, '매치 투표 생성')) {
       voteStartAt.value = formatDate(startDate);
       voteEndAt.value = formatDate(endDate);
       isShowCreateVotePop.value = true;
@@ -147,11 +144,9 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const toggleCreateMode = () => {
+const toggleCreateMode = async() => {
   if (!isCreatingVote.value) {
-    (async () => {
-      await $alert("투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)");
-    })();
+    await $alert("투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)");
   }
   isCreatingVote.value = !isCreatingVote.value;
 };
