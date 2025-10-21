@@ -141,7 +141,8 @@ const getMercenary = async() => {
   }
 }
 
-const getAddressName = () => props.userDetail.cityName + " " + props.userDetail.districtName;
+const getAddressName = () => 
+  `${props.userDetail.cityName} ${props.userDetail.districtName}`;
 
 const approve = async() => {
   try {
