@@ -3,7 +3,7 @@
     <v-list>
       <v-list-item class="category-title">
         <v-list-item-title>
-          <span>{{ $userInfo.getInfo().name }}({{ translateUserRole($userInfo.getInfo().role) }})</span> 
+          <span>{{ $userInfo.getInfo()?.name }}({{ translateUserRole($userInfo.getInfo()?.role) }})</span> 
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -34,7 +34,7 @@ const router = useRouter();
 const $userInfo = useUserInfoStore();
 const selectedCategory = ref('');
 
-const categories = getCategories($userInfo.getInfo().role);
+const categories = getCategories($userInfo.getInfo()?.role);
 
 const selectCategory = (component) => {
   selectedCategory.value = component;
