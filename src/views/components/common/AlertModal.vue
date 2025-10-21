@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="visible" max-width='400'>
-    <v-card class='rounded-xl'>
+  <v-dialog v-model="visible" max-width="400">
+    <v-card class="rounded-xl">
       <v-card-title class="text-h6 font-weight-bold text-center">
         알림
       </v-card-title>
@@ -15,10 +15,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const visible = ref(false);
-const message = ref("");
+const message = ref('');
 let resolver = null;
 
 function open(msg) {

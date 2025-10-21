@@ -33,13 +33,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import FullCalendar from "@fullcalendar/vue3";
-import DayGridPlugin from "@fullcalendar/daygrid";
-import TimeGridPlugin from "@fullcalendar/timegrid";
-import InteractionPlugin from "@fullcalendar/interaction";
-import ListPlugin from "@fullcalendar/list";
-import MatchListPop from "@/views/pages/managements/pop/MatchListPop.vue";
+import { ref } from 'vue';
+import FullCalendar from '@fullcalendar/vue3';
+import DayGridPlugin from '@fullcalendar/daygrid';
+import TimeGridPlugin from '@fullcalendar/timegrid';
+import InteractionPlugin from '@fullcalendar/interaction';
+import ListPlugin from '@fullcalendar/list';
+import MatchListPop from '@/views/pages/managements/pop/MatchListPop.vue';
 
 const matchDialog = ref(false);
 const selectedDate = ref(null);
@@ -52,13 +52,13 @@ const matchDates = ref([
 ]);
 
 const calendarOptions = ref({
-  locale: "ko",
+  locale: 'ko',
   plugins: [DayGridPlugin, TimeGridPlugin, InteractionPlugin],
-  initialView: "dayGridMonth",
+  initialView: 'dayGridMonth',
   events: matchDates.value.map(date => ({
-    title: "매치",
+    title: '매치',
     date: date,
-    color: "green",
+    color: 'green',
   })),
   eventClick: (info) => {
     const dateStr = info.event.start.toISOString().split('T')[0];
@@ -75,12 +75,12 @@ const calendarOptions = ref({
     selectedDate.value = info.dateStr;
   },
   headerToolbar: {
-    left: "prev",
-    center: "title",
-    right: "next",
+    left: 'prev',
+    center: 'title',
+    right: 'next',
   },
-  height: "auto",
-  contentHeight: "auto",
+  height: 'auto',
+  contentHeight: 'auto',
   expandRows: true,
 });
 

@@ -41,36 +41,36 @@
 </template>
 
 <script setup>
-import { ref, watch, defineEmits, defineProps, onMounted } from "vue";
+import { ref, watch, defineEmits, defineProps, onMounted } from 'vue';
 
 const isShowCreatePop = ref(true);
 
 const props = defineProps({
   selectedPlace: Object,
 });
-const groundType = ref("");
+const groundType = ref('');
 
 const groundInfo = ref({
-  placeId: "",
-  placeName: "",
-  roadAddressName: "",
-  addressName: "",
-  longitude: "",
-  latitude: "",
+  placeId: '',
+  placeName: '',
+  roadAddressName: '',
+  addressName: '',
+  longitude: '',
+  latitude: '',
   cityId: null,
   districtId: null,
-  groundType: "",
+  groundType: '',
 });
 
-const emit = defineEmits(["close", "add-ground"]);
+const emit = defineEmits(['close', 'add-ground']);
 
 const closeDialog = () => {
   isShowCreatePop.value = false;
-  emit("close");
+  emit('close');
 };
 
 const typeRule = [
-  v => !!v || "구장 타입을 선택해주세요."
+  v => !!v || '구장 타입을 선택해주세요.'
 ];
 
 
@@ -80,24 +80,24 @@ watch(() => props.selectedPlace, (val) => {
 });
 
 const setGroundInfo = (val) => {
-  groundInfo.value.placeId = val.placeId || "";
-  groundInfo.value.placeName = val.placeName || "";
-  groundInfo.value.roadAddressName = val.roadAddressName || "";
-  groundInfo.value.addressName = val.addressName || "";
-  groundInfo.value.longitude = val.longitude || "";
-  groundInfo.value.latitude = val.latitude || "";
+  groundInfo.value.placeId = val.placeId || '';
+  groundInfo.value.placeName = val.placeName || '';
+  groundInfo.value.roadAddressName = val.roadAddressName || '';
+  groundInfo.value.addressName = val.addressName || '';
+  groundInfo.value.longitude = val.longitude || '';
+  groundInfo.value.latitude = val.latitude || '';
   groundInfo.value.cityId = val.cityId || null;
   groundInfo.value.districtId = val.districtId || null;
 }
 
 const addGround = async() => {
   if (!groundInfo.groundType) {
-    await $alert("구장 타입을 선택하세요");
+    await $alert('구장 타입을 선택하세요');
     return;
   }
   if (await $confirm(`${groundInfo.value.placeName}(를)을 추가하시겠습니까?`, '구장 추가')) {
     groundInfo.value.groundType = groundType.value;
-    emit("add-ground", groundInfo.value);
+    emit('add-ground', groundInfo.value);
     closeDialog();
   }
 }

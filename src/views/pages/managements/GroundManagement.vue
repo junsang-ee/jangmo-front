@@ -41,21 +41,21 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { write, read } from "@/utils/util-axios.js";
-import GroundSearchPop from "@/views/pages/managements/pop/GroundSearchPop.vue";
+import { ref } from 'vue';
+import { write, read } from '@/utils/util-axios.js';
+import GroundSearchPop from '@/views/pages/managements/pop/GroundSearchPop.vue';
 
 const isShowSearchPop = ref(false);
 
 const groundList = ref([
-  { name: "서울 월드컵 경기장", address: "서울특별시 마포구 성산동" },
-  { name: "잠실 종합 운동장", address: "서울특별시 송파구 잠실동" }
+  { name: '서울 월드컵 경기장', address: '서울특별시 마포구 성산동' },
+  { name: '잠실 종합 운동장', address: '서울특별시 송파구 잠실동' }
 ]);
 
 const headers = [
-  { title: "구장명", key: "name" },
-  { title: "도로명 주소", key: "address" },
-  { title: "구장 상세", key: "actions", sortable: false }
+  { title: '구장명', key: 'name' },
+  { title: '도로명 주소', key: 'address' },
+  { title: '구장 상세', key: 'actions', sortable: false }
 ];
 
 const openSearchPop = () => {
@@ -72,7 +72,7 @@ const viewDetail = async(item) => {
 
 const addGround = async(groundInfo) => {
   try {
-    await write("/api/managers/", null, groundInfo);
+    await write('/api/managers/', null, groundInfo);
     
   }catch(e) {
     await $alert(e.message);

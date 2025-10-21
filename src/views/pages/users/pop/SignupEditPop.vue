@@ -258,38 +258,38 @@
 
 <script setup>
 import { computed, ref, watch, defineEmits, defineProps, onMounted } from 'vue';
-import { read, write } from "@/utils/util-axios.js";
-import { SignupState, SignupMessage } from "@/constants/signup-state.js";
-import { valid } from "@/utils/util-regex";
+import { read, write } from '@/utils/util-axios.js';
+import { SignupState, SignupMessage } from '@/constants/signup-state.js';
+import { valid } from '@/utils/util-regex';
 
 const dialog = ref(true);
-const mobile = ref("");
-const verificationCode = ref("");
-const password = ref("");
+const mobile = ref('');
+const verificationCode = ref('');
+const password = ref('');
 const selectedCity = ref(null);
 const selectedDistrict = ref(null);
 const cities = ref([]);
 const districts = ref([]);
-const retentionStatus = ref("DELETE");
+const retentionStatus = ref('DELETE');
 const allAgree = ref(false);
 const isAgreePersonalInfo = ref(false);
 const isAgreeTermsOfService = ref(false);
-const authPurposeType = ref("SIGNUP");
+const authPurposeType = ref('SIGNUP');
 const dialogContent = ref(false);
-const dialogTitle = ref("");
-const dialogText = ref("");
+const dialogTitle = ref('');
+const dialogText = ref('');
 const currentStep = ref(SignupState.ENTER_MOBILE);
 const isShowVerificationField = ref(false);
 const isShowPassword = ref(false);
 const buttonText = computed(() => {
-  if (currentStep.value === "ENTER_DETAIL" && props.signupType === "MERCENARY")
-    return "용병등록 요청";
+  if (currentStep.value === 'ENTER_DETAIL' && props.signupType === 'MERCENARY')
+    return '용병등록 요청';
   return SignupMessage[currentStep.value];
 });
 const isDisabledMobile = ref(false);
 const gender = ref(null);
 const isValid = ref(false);
-const name = ref("");
+const name = ref('');
 const birthDay = ref(null);
 
 const isShowRetentionDialog = ref(false);
@@ -299,24 +299,24 @@ const props = defineProps({
     required: true
   }
 });
-const isMember = props.signupType === "MEMBER";
+const isMember = props.signupType === 'MEMBER';
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close']);
 
 const nameRules = [
-  v => valid("NAME", v) || "이름은 2글자 이상의 한글로 입력해주세요."
+  v => valid('NAME', v) || '이름은 2글자 이상의 한글로 입력해주세요.'
 ]
 
 const codeRules = [
-  v => valid("VALID_CODE", v) || "인증코드는 6자리 숫자로 입력해주세요."
+  v => valid('VALID_CODE', v) || '인증코드는 6자리 숫자로 입력해주세요.'
 ];
 
 const mobileRules = [
-  v => valid("MOBILE", v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
+  v => valid('MOBILE', v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
 const genderRules = [
-  v => !!v || "성별을 선택해주세요."
+  v => !!v || '성별을 선택해주세요.'
 ];
 
 const cityRules = [
@@ -324,17 +324,17 @@ const cityRules = [
 ];
 
 const districtRules = [
-  v => !!v || "시/군/구를 선택해주세요."
+  v => !!v || '시/군/구를 선택해주세요.'
 ];
 
 const birthRules = [
-  v => valid("BIRTH", v) || "생년월일은 8자리의 숫자로 입력해주세요.",
-  v => validateDate(v) || "유효하지 않은 날짜입니다."
+  v => valid('BIRTH', v) || '생년월일은 8자리의 숫자로 입력해주세요.',
+  v => validateDate(v) || '유효하지 않은 날짜입니다.'
 ];
 
 const passwordRules = [
-  v => valid("PASSWORD", v) || 
-    "▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상"
+  v => valid('PASSWORD', v) || 
+    '▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상'
 ];
 
 const isLeapYear = (year) => {
@@ -387,7 +387,7 @@ const isButtonDisabled = () => {
     case SignupState.ENTER_CODE:
       return !(isFormValid.value && isValidCode.value);
     case SignupState.ENTER_DETAIL:
-      if (props.signupType === "MEMBER")
+      if (props.signupType === 'MEMBER')
         return !isValidSignUp.value;
       else 
         return !isValidRegister.value;
@@ -397,7 +397,7 @@ const isButtonDisabled = () => {
 
 const agreementTexts = {
   privacy: {
-    title: "[필수] 개인정보 수집 및 이용 동의",
+    title: '[필수] 개인정보 수집 및 이용 동의',
     text: 
     `
       1. 수집 항목: 성명, 휴대폰 번호, 생년월일<br>
@@ -407,7 +407,7 @@ const agreementTexts = {
       ,
   },
   terms: {
-    title: "[필수] 서비스 이용약관 동의",
+    title: '[필수] 서비스 이용약관 동의',
     text: 
       `
         1. 고유식별정보: 휴대폰 번호<br>
@@ -422,11 +422,11 @@ const openMercenaryRetentionDialog = async() => {
 }
 
 const retentionOnConfirm = () => {
-  handleRetentionResponse("DELETE");
+  handleRetentionResponse('DELETE');
 };
 
 const retentionOnCancel = () => {
-  handleRetentionResponse("KEEP");
+  handleRetentionResponse('KEEP');
 };
 
 const handleRetentionResponse = async(status) => {
@@ -440,7 +440,7 @@ const handleRetentionResponse = async(status) => {
 }
 
 const isValidCode = computed(() => {
-  return valid("VALID_CODE", verificationCode.value);
+  return valid('VALID_CODE', verificationCode.value);
 })
 
 const isFormValid = computed(() => {
@@ -450,15 +450,15 @@ const isFormValid = computed(() => {
 });
 
 const isValidRegister = computed(() => {
-  return valid("NAME", name.value) && gender.value
+  return valid('NAME', name.value) && gender.value
 });
 
 const isValidSignUp = computed(() => {
-  return (valid("NAME", name.value) && 
+  return (valid('NAME', name.value) && 
           gender.value &&
-          valid("BIRTH", birthDay.value) && validateDate(birthDay.value) &&
+          valid('BIRTH', birthDay.value) && validateDate(birthDay.value) &&
           selectedCity.value && selectedDistrict.value &&
-          valid("PASSWORD", password.value));
+          valid('PASSWORD', password.value));
 });
 
 const timer = ref(180); 
@@ -501,7 +501,7 @@ const executeButtonAction = async() => {
       await verifyCode();
       break;
     case SignupState.ENTER_DETAIL:
-      if (props.signupType === "MEMBER") {
+      if (props.signupType === 'MEMBER') {
         await signupMember();
       } else {
         await openMercenaryRetentionDialog();
@@ -512,7 +512,7 @@ const executeButtonAction = async() => {
 
 const sendVerificationCode = async() => {
   try {
-    await write("/api/auth/verification-codes", null, {
+    await write('/api/auth/verification-codes', null, {
       mobile: mobile.value,
       authPurposeType: authPurposeType.value
     });
@@ -520,7 +520,7 @@ const sendVerificationCode = async() => {
     currentStep.value = SignupState.ENTER_CODE;
     isDisabledMobile.value = true;
     startTimer();
-    await $alert("인증번호가 전송되었습니다.");
+    await $alert('인증번호가 전송되었습니다.');
   } catch(e) {
     isShowVerificationField.value = false;
     await $alert(e.message);
@@ -529,7 +529,7 @@ const sendVerificationCode = async() => {
 
 const getCities = async() => {
   try {
-    const response = await read("/api/locations/cities");
+    const response = await read('/api/locations/cities');
     cities.value = response;
   } catch (e) {
     await $alert(e.message);
@@ -556,18 +556,18 @@ const modifyMobile = async() => {
     isShowVerificationField.value = false;
     isAgreePersonalInfo.value = false;
     isAgreeTermsOfService.value = false;
-    verificationCode.value = "";
+    verificationCode.value = '';
   }
 }
 
 const verifyCode = async() => {
   try {
-    await write("/api/auth/verification-codes/verify", null, {
+    await write('/api/auth/verification-codes/verify', null, {
       code: verificationCode.value,
       mobile: mobile.value,
       authPurposeType: authPurposeType.value
     });
-    await $alert("정상적으로 인증되었습니다.");
+    await $alert('정상적으로 인증되었습니다.');
     stopTimer();
     currentStep.value = SignupState.ENTER_DETAIL;
     getCities();
@@ -620,9 +620,9 @@ const registerMercenary = async() => {
         gender: gender.value,
         retentionStatus: retentionStatus.value
       };
-      await write("/api/auth/register/mercenary", null, payload);
-      await $alert("용병 등록 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
-      emit("close");
+      await write('/api/auth/register/mercenary', null, payload);
+      await $alert('용병 등록 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.');
+      emit('close');
     }
   } catch(e) {
     await $alert(e.message);
@@ -642,9 +642,9 @@ const signupMember = async() => {
         cityId: selectedCity.value.cityId,
         districtId: selectedDistrict.value.districtId,
       };
-      await write("/api/auth/signup/member", null, payload);
-      await $alert("회원가입 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.");
-      emit("close");
+      await write('/api/auth/signup/member', null, payload);
+      await $alert('회원가입 요청이 완료되었습니다. 관리자 승인 후에 로그인하실 수 있습니다.');
+      emit('close');
     }
   } catch(e) {
     await $alert(e.message);

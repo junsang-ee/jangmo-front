@@ -45,16 +45,16 @@
   />
 </template>
 <script setup>
-import { ref, watch, nextTick, onMounted } from "vue";
-import { read } from "@/utils/util-axios.js";
-import GroundCreatePop from "@/views/pages/managements/pop/GroundCreatePop.vue"
+import { ref, watch, nextTick, onMounted } from 'vue';
+import { read } from '@/utils/util-axios.js';
+import GroundCreatePop from '@/views/pages/managements/pop/GroundCreatePop.vue';
 
 const props = defineProps({ dialog: Boolean });
-const emit = defineEmits(["close", "addGround"]);
+const emit = defineEmits(['close', 'addGround']);
 
 const isShowSearchPop = ref(true);
 const isShowCreatePop = ref(false);
-const keyword = ref("");
+const keyword = ref('');
 const selectedPlace = ref(null);
 
 let map = null;
@@ -65,7 +65,7 @@ const selectedCircle = ref(null);
 const appKey = import.meta.env.VITE_KAKAO_APP_KEY;
 
 const initMap = () => {
-  const container = document.getElementById("map");
+  const container = document.getElementById('map');
   if (!container) return;
 
   const options = {
@@ -80,7 +80,7 @@ const loadKakaoMapScript = () => {
   if (document.getElementById('kakao-map-script')) return;
 
   const script = document.createElement('script')
-  script.id = "kakao-map-script";
+  script.id = 'kakao-map-script';
   script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services`;
   script.onload = () => {
     window.kakao.maps.load(() => {
@@ -167,15 +167,15 @@ const closeCreatePop = () => {
 
 const closeSearchPop = () => {
   isShowSearchPop.value = false;
-  emit("close");
+  emit('close');
   clearMarkers();
-  keyword.value = "";
+  keyword.value = '';
   selectedPlace.value = null;
 };
 
 const addGround = (groundInfo) => {
   if (groundInfo)
-    emit("add-ground", groundInfo);
+    emit('add-ground', groundInfo);
 };
 
 const openCreatePop = () => {

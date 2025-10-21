@@ -66,30 +66,30 @@
 </template>
   
 <script setup>
-import { ref } from "vue";
-import { valid } from "@/utils/util-regex";
-import { update } from "@/utils/util-axios.js";
+import { ref } from 'vue';
+import { valid } from '@/utils/util-regex';
+import { update } from '@/utils/util-axios.js';
 
 const isShowModal = ref(false);
 const isLoading = ref(false);
-const currentPassword = ref("");
-const newPassword = ref("");
-const confirmPassword = ref("");
+const currentPassword = ref('');
+const newPassword = ref('');
+const confirmPassword = ref('');
 const isValid = ref(false);
 
 const passwordRule = [
-  v => valid("PASSWORD", v) || 
-  "▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상"
+  v => valid('PASSWORD', v) || 
+  '▪️ 2가지 이상 조합(영문/숫자/특수문자)\n▪️ 8자리 이상'
 ];
   
 const passwordConfirmRule = [
-  v => v === newPassword.value || "비밀번호가 일치하지 않습니다."
+  v => v === newPassword.value || '비밀번호가 일치하지 않습니다.'
 ];
   
 const isFormValid = () => {
   return (
-    valid("PASSWORD", currentPassword.value) &&
-    valid("PASSWORD", newPassword.value) && 
+    valid('PASSWORD', currentPassword.value) &&
+    valid('PASSWORD', newPassword.value) && 
     newPassword.value === confirmPassword.value
   );
 };
@@ -99,13 +99,13 @@ const updatePassword = async() => {
   try {
     isLoading.value = true;
     if (valid) {
-      await update("/api/users/members/password", null, {
+      await update('/api/users/members/password', null, {
           oldPassword: currentPassword.value,
           newPassword: newPassword.value
       });
     }
     isLoading.value = false;
-    await $alert("비밀번호가 정상적으로 변경되었습니다.");
+    await $alert('비밀번호가 정상적으로 변경되었습니다.');
     close();
   } catch (e) {
     isLoading.value = false;
@@ -119,9 +119,9 @@ const open = () => {
   
 const close = () => {
   isShowModal.value = false;
-  currentPassword.value = "";
-  newPassword.value = "";
-  confirmPassword.value = "";
+  currentPassword.value = '';
+  newPassword.value = '';
+  confirmPassword.value = '';
   isLoading.value = false;
 };
 

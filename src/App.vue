@@ -22,17 +22,17 @@
 
 <script setup>
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue';
 import HeaderLayout from '@/views/layouts/HeaderLayout.vue';
 import MobileNavigationBar from '@/views/layouts/MobileNavigationBar.vue';
 import WebNavigationBar from '@/views/layouts/WebNavigationBar.vue';
-import { useNavigationStore } from "@/store/navigation";
-import { useTokenStore } from "@/store/auth";
-import { useUserInfoStore } from "@/store/user";
-import { tokenValidator } from "@/utils/util-auth";
+import { useNavigationStore } from '@/store/navigation';
+import { useTokenStore } from '@/store/auth';
+import { useUserInfoStore } from '@/store/user';
+import { tokenValidator } from '@/utils/util-auth';
 import { storeToRefs } from 'pinia';
-import { useRouter} from "vue-router";
-import { useLoadingStore } from "@/store/loading";
+import { useRouter} from 'vue-router';
+import { useLoadingStore } from '@/store/loading';
 
 const isMobile = ref(false);
 const $auth = useTokenStore();
@@ -43,15 +43,15 @@ const { menuVisible } = storeToRefs($navigation);
 const router = useRouter();
 
 router.beforeEach((to, from, next) => {
-  document.title = "JangmoFC";
+  document.title = 'JangmoFC';
 
-  if (to?.name?.startsWith("Login")) {
+  if (to?.name?.startsWith('Login')) {
     $auth.reset();
     $userInfo.reset();
     $navigation.closeMenu();
     return next();
   } else {
-    if (to?.name?.startsWith("Dashboard")) {
+    if (to?.name?.startsWith('Dashboard')) {
       $navigation.closeMenu();
     }
     try {
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
         next();
       }
     } catch (toPath) {
-      if (from.name === "Login") {
+      if (from.name === 'Login') {
         next(false);
       } else {
         next({ name : toPath});

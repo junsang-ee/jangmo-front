@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 const tokenValidator = async(token) => {
     if (token) {
@@ -8,10 +8,10 @@ const tokenValidator = async(token) => {
         return token;
       } else {
         await $alert('세션이 만료되었습니다.');
-        throw "Login";
+        throw 'Login';
       }
     } else {
-      throw "Login";
+      throw 'Login';
     }
   };
 

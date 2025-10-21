@@ -6,15 +6,15 @@ const birthRegex = /^\d{8}$/;
 
 const valid = (field, value) => {
     switch(field) {
-        case "NAME": 
+        case 'NAME': 
             return nameRegex.test(value); 
-        case "VALID_CODE": 
+        case 'VALID_CODE': 
             return validCodeRegex.test(value);
-        case "MOBILE":
+        case 'MOBILE':
             return mobileRegex.test(value);
-        case "PASSWORD":
+        case 'PASSWORD':
             return passwordRegex.test(value);
-        case "BIRTH":
+        case 'BIRTH':
             return birthRegex.test(value);
     }
 }

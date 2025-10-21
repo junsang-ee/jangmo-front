@@ -94,12 +94,12 @@
 
 <script setup>
 import { ref, watch, onMounted, defineEmits, defineProps } from 'vue';
-import { read, update } from "@/utils/util-axios.js";
-import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
-import { autoMobileHyphen, replaceBirthHyphen } from "@/utils/util-unit";
-import { translateMemberStatus, translateMercenaryStatus } from "@/constants/user-status.js"
-import { translateUserRole } from "@/constants/role.js";
-import MatchListPop from "@/views/pages/managements/pop/MatchListPop.vue";
+import { read, update } from '@/utils/util-axios.js';
+import { convertDateOnlyDay } from '@/utils/util-dateConverter.js';
+import { autoMobileHyphen, replaceBirthHyphen } from '@/utils/util-unit';
+import { translateMemberStatus, translateMercenaryStatus } from '@/constants/user-status.js';
+import { translateUserRole } from '@/constants/role.js';
+import MatchListPop from '@/views/pages/managements/pop/MatchListPop.vue';
 
 const isDialogOpen = ref(true);
 const isOpenMatchListPop = ref(false);
@@ -110,14 +110,14 @@ const props = defineProps({
     required: true
   }
 });
-const isMember = ref(props.userDetail.role !== "MERCENARY");
-const titleRole = ref(isMember.value ? "회원" : "용병");
-const mercenaryId = ref("");
-const emit = defineEmits(["close"]);
+const isMember = ref(props.userDetail.role !== 'MERCENARY');
+const titleRole = ref(isMember.value ? '회원' : '용병');
+const mercenaryId = ref('');
+const emit = defineEmits(['close']);
 
 const closeDialog = () => {
   isDialogOpen.value = false;
-  emit("close");
+  emit('close');
 };
 
 const openMatchListDialog = () => isOpenMatchListPop.value = true;
@@ -150,7 +150,7 @@ const approve = async() => {
       if (await $confirm('해당 회원의 가입 요청을 승인하시겠습니까?', '회원 가입 승인')) {
         await update(`/api/managers/members/${props.userDetail.id}/approve`);
       }
-      await $alert("가입 승인이 완료되었습니다.");
+      await $alert('가입 승인이 완료되었습니다.');
       closeDialog();
     } else {
       if (await $confirm('승인 대기 상태인 용병은 매치 등록이 선행되어야 합니다.\n 매치 등록을 진행할까요?','용병 매치 등록')) {

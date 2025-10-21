@@ -24,15 +24,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useUserInfoStore } from "@/store/user";
-import { translateUserRole } from "@/constants/role.js";
-import { getCategories } from "@/constants/category.js";
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserInfoStore } from '@/store/user';
+import { translateUserRole } from '@/constants/role.js';
+import { getCategories } from '@/constants/category.js';
 
 const router = useRouter();
 const $userInfo = useUserInfoStore();
-const selectedCategory = ref("");
+const selectedCategory = ref('');
 
 const categories = getCategories($userInfo.getInfo().role);
 
@@ -42,7 +42,7 @@ const selectCategory = (component) => {
 };
 
 onMounted(() => {
-  selectCategory("UserDetail");
+  selectCategory('UserDetail');
 });
 </script>
 

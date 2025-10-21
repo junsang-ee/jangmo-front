@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import {useRouter} from "vue-router";
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
-const toHome = () => router.replace("Dashboard");
+const toHome = () => router.replace('Dashboard');
 </script>
 
 <style scope>

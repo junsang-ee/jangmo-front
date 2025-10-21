@@ -20,11 +20,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
-import { useNavigationStore } from "@/store/navigation";
-import { useTokenStore } from "@/store/auth";
-import { useUserInfoStore } from "@/store/user";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
+import { useNavigationStore } from '@/store/navigation';
+import { useTokenStore } from '@/store/auth';
+import { useUserInfoStore } from '@/store/user';
 
 const router = useRouter();
 const $auth = useTokenStore();
@@ -48,7 +48,7 @@ const handleResize = () => {
 
 const navigate = (component) => {
   if (isLoggedOut()) return;
-  if (component === "Dashboard") {
+  if (component === 'Dashboard') {
     $navigation.closeMenu();
   }
   router.push({ name: component });

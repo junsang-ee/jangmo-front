@@ -57,9 +57,9 @@
 
 <script setup>
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
-import { update } from "@/utils/util-axios.js";
-import { useRouter, useRoute } from "vue-router";
-import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
+import { update } from '@/utils/util-axios.js';
+import { useRouter, useRoute } from 'vue-router';
+import { convertDateOnlyDay } from '@/utils/util-dateConverter.js';
 
 const router = useRouter();
 
@@ -68,14 +68,14 @@ const props = defineProps({
   required: true
 });
 
-const emit = defineEmits(["close", "approved"]);
+const emit = defineEmits(['close', 'approved']);
 
 const isShowDialog = ref(true);
 const matchList = ref([]);
 
 const close = () => {
   isShowDialog.value = false;
-  emit("close");
+  emit('close');
 };
 
 const formatDate = (dateStr) => {
@@ -98,13 +98,10 @@ const handleMatch = async (matchId) => {
 };
 
 const goCreateMatchPage = () => {
-  router.replace({name: "MatchManagement"});
+  router.replace({name: 'MatchManagement'});
   close();
 }
 
-onMounted(() => {
-
-});
 </script>
 
 <style scoped>

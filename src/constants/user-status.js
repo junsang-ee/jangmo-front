@@ -1,21 +1,21 @@
 export const USER_COMMON_STATUSES = [
-  {name: "정상 이용가능", value:"ENABLED"},
-  {name: "이용불가", value: "DISABLED"},
-  {name: "승인대기", value: "PENDING"}
+  {name: '정상 이용가능', value:'ENABLED'},
+  {name: '이용불가', value: 'DISABLED'},
+  {name: '승인대기', value: 'PENDING'}
 ];
 
 export const MEMBER_STATUSES = [
-  {name: "정상 이용가능", value:"ENABLED"},
-  {name: "이용불가", value: "DISABLED"},
-  {name: "승인대기", value: "PENDING"},
-  {name: "부상", value: "INJURED"},
+  {name: '정상 이용가능', value:'ENABLED'},
+  {name: '이용불가', value: 'DISABLED'},
+  {name: '승인대기', value: 'PENDING'},
+  {name: '부상', value: 'INJURED'},
 ];
 
 export const MERCENARY_STATUSES = [
-  {name: "정상 이용가능", value:"ENABLED"},
-  {name: "이용불가", value: "DISABLED"},
-  {name: "승인대기", value: "PENDING"},
-  {name: "만료", value: "EXPIRED"},
+  {name: '정상 이용가능', value:'ENABLED'},
+  {name: '이용불가', value: 'DISABLED'},
+  {name: '승인대기', value: 'PENDING'},
+  {name: '만료', value: 'EXPIRED'},
 ];
 
 export const translateMemberStatus = (value) => {

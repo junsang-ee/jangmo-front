@@ -124,16 +124,16 @@
 </template>
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue';
-import { read } from "@/utils/util-axios.js";
-import { translateUserRole } from "@/constants/role.js";
-import { USER_COMMON_STATUSES, MEMBER_STATUSES, MERCENARY_STATUSES} from "@/constants/user-status.js"
-import { translateMemberStatus, translateMercenaryStatus } from "@/constants/user-status.js"
-import UserDetailPop from "@/views/pages/managements/pop/UserDetailPop.vue";
+import { read } from '@/utils/util-axios.js';
+import { translateUserRole } from '@/constants/role.js';
+import { USER_COMMON_STATUSES, MEMBER_STATUSES, MERCENARY_STATUSES} from '@/constants/user-status.js'
+import { translateMemberStatus, translateMercenaryStatus } from '@/constants/user-status.js'
+import UserDetailPop from '@/views/pages/managements/pop/UserDetailPop.vue';
 
 const userTypes = ref([
-  { name: "전체", value: "" },
-  { name: "회원", value: "MEMBER" },
-  { name: "용병", value: "MERCENARY" },
+  { name: '전체', value: '' },
+  { name: '회원', value: 'MEMBER' },
+  { name: '용병', value: 'MERCENARY' },
 ]);
 
 const userStatuses = ref(USER_COMMON_STATUSES);
@@ -142,7 +142,7 @@ const mercenaryStatuses = ref(MERCENARY_STATUSES);
 
 const selectedUserType = ref(userTypes.value[0]);
 const selectedUserStatus = ref(userStatuses.value[0]);
-const searchKeyword = ref("");
+const searchKeyword = ref('');
 const isLoading = ref(false);
 const userList = ref([]);
 const currentPage = ref(1);
@@ -152,14 +152,14 @@ const userDetail = ref({});
 const isOpenUserDetail = ref(false);
 
 const userTableHeaders = ref([
-  { title: "이름", align: "start", value: "userName", sortable: false, class:"header" },
-  { title: "유저타입", align: "start", value: "role", sortable: false, class:"header" },
-  { title: "유저상태", align: "start", value: "status", sortable: false, class:"header" },
-  { title: "유저상세", align: "start", value: "actions", sortable: false, class:"header" },
+  { title: '이름', align: 'start', value: 'userName', sortable: false, class:'header' },
+  { title: '유저타입', align: 'start', value: 'role', sortable: false, class:'header' },
+  { title: '유저상태', align: 'start', value: 'status', sortable: false, class:'header' },
+  { title: '유저상세', align: 'start', value: 'actions', sortable: false, class:'header' },
 ]);
 
 const openUserDetailDialog = async(user) => {
-  if (user.role === "MEMBER")
+  if (user.role === 'MEMBER')
     userDetail.value = await getMember(user.userId);
   else userDetail.value = await getMercenary(user.userId);
   isOpenUserDetail.value = true;
@@ -174,7 +174,7 @@ const closeDetailPop = () => {
   getUsers();
 }
 const getStatus = (role, status) => {
-  if (role === "MERCENARY")
+  if (role === 'MERCENARY')
     return translateMercenaryStatus(status.mercenaryStatus);
   else return translateMemberStatus(status.memberStatus);
 }
@@ -199,7 +199,7 @@ const getMercenary = async(userId) => {
 const getUsers = async() => {
   isLoading.value = true;
   try {
-    const response = await read("/api/managers/users", {
+    const response = await read('/api/managers/users', {
       page: currentPage.value - 1,
       size: pageSize.value,
       role: selectedUserType.value.value,

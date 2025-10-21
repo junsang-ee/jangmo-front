@@ -102,42 +102,42 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useRouter } from "vue-router";
-import { read, write } from "@/utils/util-axios.js";
-import { tokenValidator } from "@/utils/util-auth";
-import { useTokenStore } from "@/store/auth";
-import { useUserInfoStore } from "@/store/user";
+import { useRouter } from 'vue-router';
+import { read, write } from '@/utils/util-axios.js';
+import { tokenValidator } from '@/utils/util-auth';
+import { useTokenStore } from '@/store/auth';
+import { useUserInfoStore } from '@/store/user';
 import SignupEditPop from '@/views/pages/users/pop/SignupEditPop.vue';
-import ResetCredentialsPop from "@/views/pages/auth/pop/ResetCredentialsPop.vue";
-import { valid } from "@/utils/util-regex";
+import ResetCredentialsPop from '@/views/pages/auth/pop/ResetCredentialsPop.vue';
+import { valid } from '@/utils/util-regex';
 
 const router = useRouter();
 const $token = useTokenStore();
 const $userInfo = useUserInfoStore();
-const mobile = ref("");
-const password = ref("");
-const resetUserType = ref("MEMBER");
-const signupUserType = ref("MEMBER");
+const mobile = ref('');
+const password = ref('');
+const resetUserType = ref('MEMBER');
+const signupUserType = ref('MEMBER');
 const isShowSignup = ref(false);
 const isShowResetCredentials = ref(false);
 const isShowVerifyInput = ref(false);
-const mercenaryCode = ref("");
+const mercenaryCode = ref('');
 const isValid = ref(null);
 const isLoginMember = ref(true);
 
 const buttonText = computed(() => {
   if (isShowVerifyInput.value) {
     if (isLoginMember.value) 
-      return "회원으로 로그인";
+      return '회원으로 로그인';
     else 
-      return "용병으로 로그인";
+      return '용병으로 로그인';
   } else {
-    return "휴대폰 번호로 시작하기";
+    return '휴대폰 번호로 시작하기';
   }
 });
 
 const mobileRules = [
-  v => valid("MOBILE", v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
+  v => valid('MOBILE', v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
 ];
 
 const hideSignup = () => {
@@ -160,7 +160,7 @@ const hideResetCredentials = () => {
 
 const login = () => {
   if (!isShowVerifyInput.value) {
-    if (valid("MOBILE", mobile.value))
+    if (valid('MOBILE', mobile.value))
       isShowVerifyInput.value = true;
     return;
   }
@@ -171,9 +171,9 @@ const login = () => {
 }
 
 const convertLoginType = (type) => {
-  password.value = "";
-  mercenaryCode.value = "";
-  if (type === "member") {
+  password.value = '';
+  mercenaryCode.value = '';
+  if (type === 'member') {
     isLoginMember.value = true;
   } else {
     isLoginMember.value = false;
@@ -184,15 +184,15 @@ const memberLogin = async() => {
   const valid = await isValid.value.validate();
   try {
     if (valid) {
-      const url = "/api/auth/login/member";
+      const url = '/api/auth/login/member';
       const login = {
         mobile: mobile.value,
         password: password.value
       };
       const result = await write(url, null, login);
       setUserDetail(result);
-      await $alert("회원 권한으로 정상 로그인 되었습니다.");
-      router.replace({name: "Dashboard"});
+      await $alert('회원 권한으로 정상 로그인 되었습니다.');
+      router.replace({name: 'Dashboard'});
     }
   } catch(e) {
     await $alert(e.message);
@@ -204,15 +204,15 @@ const mercenaryLogin = async() => {
   const valid = await isValid.value.validate();
   try {
     if (valid) {
-      const url = "/api/auth/login/mercenary";
+      const url = '/api/auth/login/mercenary';
       const loginPayload = {
         mobile: mobile.value,
         mercenaryCode: mercenaryCode.value
       };
       const result = await write(url, null, loginPayload);
       setUserDetail(result);
-      await $alert("용병 권한으로 정상 로그인 되었습니다.");
-      router.replace({name: "Dashboard"});
+      await $alert('용병 권한으로 정상 로그인 되었습니다.');
+      router.replace({name: 'Dashboard'});
     }
   } catch(e) {
     await $alert(e.message);
@@ -222,7 +222,7 @@ const mercenaryLogin = async() => {
 const setUserDetail = async(result) => {
   const token = tokenValidator(result?.jwt);
   $token.setToken(token);
-  const myInfo = await read("/api/users/me");
+  const myInfo = await read('/api/users/me');
   $userInfo.setInfo(myInfo);
 }
 

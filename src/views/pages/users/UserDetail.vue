@@ -138,23 +138,23 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { read, update, remove } from "@/utils/util-axios.js";
-import { useRouter } from "vue-router";
-import { useUserInfoStore } from "@/store/user";
-import { useTokenStore } from "@/store/auth";
-import { convertDateOnlyDay } from "@/utils/util-dateConverter.js";
-import UpdatePasswordPop from "@/views/pages/users/pop/UserUpdatePasswordPop.vue";
-import { autoMobileHyphen, replaceBirthHyphen } from "@/utils/util-unit";
+import { read, update, remove } from '@/utils/util-axios.js';
+import { useRouter } from 'vue-router';
+import { useUserInfoStore } from '@/store/user';
+import { useTokenStore } from '@/store/auth';
+import { convertDateOnlyDay } from '@/utils/util-dateConverter.js';
+import UpdatePasswordPop from '@/views/pages/users/pop/UserUpdatePasswordPop.vue';
+import { autoMobileHyphen, replaceBirthHyphen } from '@/utils/util-unit';
 
 const router = useRouter();
 const $userInfo = useUserInfoStore();
 const $auth = useTokenStore();
 
-const name = ref("");
-const mobile = ref("");
+const name = ref('');
+const mobile = ref('');
 const createdAt = ref(null);
-const address = ref("");
-const birth = ref("");
+const address = ref('');
+const birth = ref('');
 
 const cities = ref([]);
 const districts = ref([]);
@@ -163,21 +163,21 @@ const selectedDistrict = ref(null);
 const isAddressValid = ref(false);
 
 const memberDetail = ref({
-  name: "",
-  mobile: "",
-  createdAt: "",
-  address: "",
+  name: '',
+  mobile: '',
+  createdAt: '',
+  address: '',
   cityId: 0,
-  cityName: "",
+  cityName: '',
   districtId: 0,
-  districtName: ""
+  districtName: ''
 });
 
 const isShowModifyAddress = ref(false);
 const isLoading = ref(false);
 
-const cityRule = [v => !!v || "시/도를 선택해주세요."];
-const districtRule = [v => !!v || "시/군/구를 선택해주세요."];
+const cityRule = [v => !!v || '시/도를 선택해주세요.'];
+const districtRule = [v => !!v || '시/군/구를 선택해주세요.'];
 
 const openModifyAddressDialog = async() => {
   isShowModifyAddress.value = true;
@@ -194,7 +194,7 @@ const findDistrict = (districtId) => districts.value.find(district => district.d
 const confirmAccountDelete = async() => {
   if (await $confirm('회원 탈퇴를 할 경우, 즉시 모든 데이터가 삭제됩니다. 그래도 회원 탈퇴를 하시겠습니까?', '회원 탈퇴')) {
     try {
-      await remove("/api/users/members/retire");
+      await remove('/api/users/members/retire');
     } catch(e) {
       await $alert(e.message);
     }
@@ -205,7 +205,7 @@ const confirmLogout = async() => {
   if (await $confirm('로그아웃 하시겠습니까?', '로그아웃')) {
     $auth.reset();
     $userInfo.reset();
-    router.replace("Login");
+    router.replace('Login');
   }
 }
 
@@ -216,7 +216,7 @@ const getIsEnabledModifyAddress = () => {
 }
 
 const loadInfo = async() => {
-  if ($userInfo.getInfo().role === "MERCENARY") {
+  if ($userInfo.getInfo().role === 'MERCENARY') {
     name.value = $userInfo.getInfo().name;
     mobile.value = $userInfo.getInfo().mobile;
     createdAt.value = convertDateOnlyDay($userInfo.getInfo().createdAt);
@@ -233,7 +233,7 @@ const loadInfo = async() => {
 const getCities = async() => {
   isLoading.value = true;
   try {
-    const response = await read("/api/locations/cities");
+    const response = await read('/api/locations/cities');
     cities.value = response;
     selectedCity.value = findCity(memberDetail.value.cityId);
     isLoading.value = false;
@@ -263,11 +263,11 @@ const modifyAddress = async() => {
     if (valid) {
       let updateAddress = `${selectedCity.value.name} ${selectedDistrict.value.name}`;
       if (await $confirm(`${updateAddress}(으)로 주소를 변경하시겠습니까?`, '주소 변경')) {
-        await update("/api/users/members/address", null, {
+        await update('/api/users/members/address', null, {
           cityId: selectedCity.value.cityId,
           districtId: selectedDistrict.value.districtId
         });
-        await $alert("주소가 정상적으로 변경되었습니다.");
+        await $alert('주소가 정상적으로 변경되었습니다.');
         loadInfo();
         closeModifyAddressDialog();
       }
@@ -279,7 +279,7 @@ const modifyAddress = async() => {
 
 const getMemberDetail = async() => {
   try {
-    const response = await read("/api/users/members/me");
+    const response = await read('/api/users/members/me');
     memberDetail.value = response;
   }catch(e) {
     await $alert(e.message);

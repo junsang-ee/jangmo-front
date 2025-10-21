@@ -147,7 +147,7 @@ const isMobile = computed(() => {
 });
 
 const formattedVoteEndDate = computed({
-  get: () => (voteEndDate.value ? formatDate(voteEndDate.value) : ""),
+  get: () => (voteEndDate.value ? formatDate(voteEndDate.value) : ''),
   set: (val) => {
     if (val instanceof Date || (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}$/))) {
       voteEndDate.value = val;
@@ -158,7 +158,7 @@ const formattedVoteEndDate = computed({
 });
 
 const formattedMatchDate = computed({
-  get: () => (matchDate.value ? formatDate(matchDate.value) : ""),
+  get: () => (matchDate.value ? formatDate(matchDate.value) : ''),
   set: (val) => {
     if (val instanceof Date || (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}$/))) {
       matchDate.value = val;
@@ -168,17 +168,17 @@ const formattedMatchDate = computed({
 });
 
 const formatDate = (date) => {
-  if (!date) return "";
+  if (!date) return '';
 
   let d = date;
   if (!(date instanceof Date)) 
     d = new Date(date);
 
-  if (isNaN(d.getTime())) return "";
+  if (isNaN(d.getTime())) return '';
 
   const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
   return `${yyyy}.${mm}.${dd}`;
 };
 
@@ -202,7 +202,7 @@ const handleMatchSelect = (val) => {
   isSelectMatchAt.value = false;
 };
 
-const closeDialog = () => emit("close");
+const closeDialog = () => emit('close');
 
 const createVote = async () => {
   const { valid } = await isValid.value.validate();
@@ -223,40 +223,40 @@ const createVote = async () => {
           await $alert('매치일을 선택해주세요.');
           return;
         }
-        await write("/api/managers/votes/matches", null, {
+        await write('/api/managers/votes/matches', null, {
           title: title.value,
           matchType: matchType.value,
           matchAt: formattedMatchAt,
           endAt: formattedVoteEndAt,
-          modeType: allowDuplicate.value ? "MULTIPLE" : "SINGLE"
+          modeType: allowDuplicate.value ? 'MULTIPLE' : 'SINGLE'
         });
-        await $alert("매치 투표가 정상적으로 생성되었습니다.");
+        await $alert('매치 투표가 정상적으로 생성되었습니다.');
       } else {
-        await write("/api/managers/votes/general", null, {
+        await write('/api/managers/votes/general', null, {
           title: title.value,
           endAt: formattedVoteEndAt,
-          modeType: allowDuplicate.value ? "MULTIPLE" : "SINGLE"
+          modeType: allowDuplicate.value ? 'MULTIPLE' : 'SINGLE'
         });
-        await $alert("일반 투표가 정상적으로 생성되었습니다.");
+        await $alert('일반 투표가 정상적으로 생성되었습니다.');
       }
 
       closeDialog();
     } else {
-      await $alert("입력값을 확인해주세요.");
+      await $alert('입력값을 확인해주세요.');
     }
   } catch (e) {
-    console.error("투표 생성 오류:", e);
+    console.error('투표 생성 오류:', e);
     await $alert(`투표 생성 중 오류가 발생했습니다: ${e.message || e}`);
   }
 };
 
 const toSimpleDateFormat = (date) => {
-  if (!date) return "";
+  if (!date) return '';
   let d = date;
   if (!(date instanceof Date)) {
     d = new Date(date);
   }
-  if (isNaN(d.getTime())) return "";
+  if (isNaN(d.getTime())) return '';
 
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -306,7 +306,7 @@ watch(() => voteType.value, (newType) => {
 
   voteEndDate.value = null;
   matchDate.value = null;
-  title.value = "";
+  title.value = '';
 
   isSelectVoteEndAt.value = false;
   isSelectMatchAt.value = false;
@@ -314,12 +314,12 @@ watch(() => voteType.value, (newType) => {
 
 watch([matchDate, voteType, matchType], () => {
   if (matchDate.value && isMatchVote.value) {
-    const matchTypeName = matchType.value === "FUTSAL" ? "풋살" : "축구";
+    const matchTypeName = matchType.value === 'FUTSAL' ? '풋살' : '축구';
     title.value = `${toSimpleDateFormat(matchDate.value)} ${matchTypeName} 경기 투표`;
   } else if (!isMatchVote.value) {
-    title.value = "";
+    title.value = '';
   } else {
-    title.value = "";
+    title.value = '';
   }
 }, { immediate: true });
 
@@ -329,7 +329,7 @@ onMounted(() => {
     if (!isNaN(initialDate.getTime())) {
       voteEndDate.value = initialDate;
     } else {
-      console.warn("endDate가 유효한 날짜 형식이 아닙니다:", props.initialVoteEndDate);
+      console.warn('endDate가 유효한 날짜 형식이 아닙니다:', props.initialVoteEndDate);
       voteEndDate.value = null;
     }
   }
@@ -436,17 +436,6 @@ onMounted(() => {
   color: #618264 !important;
   background-color: rgba(97, 130, 100, 0.1);
   border-radius: 8px;
-}
-
-.custom-date-picker .v-date-picker__title::before {
-  content: "날짜 선택";
-  position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #555;
 }
 
 .custom-date-picker .v-date-picker__title {

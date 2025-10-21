@@ -29,14 +29,14 @@
 </template>
   
 <script setup>
-import { ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useNavigationStore } from "@/store/navigation";
-import { useTokenStore } from "@/store/auth";
-import { useUserInfoStore } from "@/store/user";
-import { storeToRefs } from "pinia";
-import { translateUserRole } from "@/constants/role.js";
-import { getCategories } from "@/constants/category.js";
+import { ref, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useNavigationStore } from '@/store/navigation';
+import { useTokenStore } from '@/store/auth';
+import { useUserInfoStore } from '@/store/user';
+import { storeToRefs } from 'pinia';
+import { translateUserRole } from '@/constants/role.js';
+import { getCategories } from '@/constants/category.js';
 
 const router = useRouter();
 const route = useRoute();
@@ -45,7 +45,7 @@ const $userInfo = useUserInfoStore();
 
 const categories = ref([]);
 
-const selectedCategory = ref("");
+const selectedCategory = ref('');
 const hoveredCategory = ref(null);
 const isMobile = ref(window.innerWidth <= 768);
 
@@ -57,9 +57,10 @@ window.addEventListener('resize', () => {
 });
 
 const resetCategory = () => {
-  selectedCategory.value = "";
+  selectedCategory.value = '';
   hoveredCategory.value = null;
 }
+
 const selectCategory = (component) => {
   selectedCategory.value = component;
   closeMenu();
@@ -71,7 +72,7 @@ const closeMenu = () => {
 }
 
 watch(() => route.name, (routeName) => {
-  if (routeName === "Dashboard")
+  if (routeName === 'Dashboard')
     resetCategory();
 }, {immediate : true});
 
@@ -80,6 +81,7 @@ watch(() => $userInfo.getInfo(), (userInfo) => {
     categories.value = getCategories(userInfo.role);
   }
 }, { immediate: true });
+
 </script>
   
 <style scoped>

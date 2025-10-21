@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-export const useUserInfoStore = defineStore("userInfo", () => {
+export const useUserInfoStore = defineStore('userInfo', () => {
   const userInfo = ref(null);
 
   const setInfo = (val) => {

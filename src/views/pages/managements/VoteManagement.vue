@@ -40,12 +40,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import FullCalendar from "@fullcalendar/vue3";
-import DayGridPlugin from "@fullcalendar/daygrid";
-import TimeGridPlugin from "@fullcalendar/timegrid";
-import InteractionPlugin from "@fullcalendar/interaction";
-import VoteCreatePop from "./pop/VoteCreatePop.vue";
+import { ref, onMounted } from 'vue';
+import FullCalendar from '@fullcalendar/vue3';
+import DayGridPlugin from '@fullcalendar/daygrid';
+import TimeGridPlugin from '@fullcalendar/timegrid';
+import InteractionPlugin from '@fullcalendar/interaction';
+import VoteCreatePop from './pop/VoteCreatePop.vue';
 
 const today = new Date();
 const selectYear = ref(null);
@@ -57,20 +57,20 @@ const calendarRef = ref(null);
 const isCreatingVote = ref(false);
 
 const colorPalette = [
-  "green", "red", "blue", "orange", 
-  "purple", "teal", "indigo", "pink"
+  'green', 'red', 'blue', 'orange', 
+  'purple', 'teal', 'indigo', 'pink'
 ];
 
 //dummy
 const votes = [
-  { title: "매칭투표", start: "2025-08-25", end: "2025-08-27" },
-  { title: "매칭투표", start: "2025-08-21", end: "2025-08-26" },
-  { title: "일반투표", start: "2025-08-28", end: "2025-08-29" },
-  { title: "이벤트투표", start: "2025-08-10", end: "2025-08-11" },
-  { title: "정기투표", start: "2025-08-14", end: "2025-08-15" },
-  { title: "특별투표", start: "2025-08-17", end: "2025-08-19" },
-  { title: "매칭투표", start: "2025-08-03", end: "2025-08-05" },
-  { title: "일반투표", start: "2025-08-07", end: "2025-08-09" },
+  { title: '매칭투표', start: '2025-08-25', end: '2025-08-27' },
+  { title: '매칭투표', start: '2025-08-21', end: '2025-08-26' },
+  { title: '일반투표', start: '2025-08-28', end: '2025-08-29' },
+  { title: '이벤트투표', start: '2025-08-10', end: '2025-08-11' },
+  { title: '정기투표', start: '2025-08-14', end: '2025-08-15' },
+  { title: '특별투표', start: '2025-08-17', end: '2025-08-19' },
+  { title: '매칭투표', start: '2025-08-03', end: '2025-08-05' },
+  { title: '일반투표', start: '2025-08-07', end: '2025-08-09' },
 ];
 
 const voteEvents = ref(
@@ -81,18 +81,18 @@ const voteEvents = ref(
 );
 
 const calendarOptions = ref({
-  locale: "ko",
+  locale: 'ko',
   plugins: [DayGridPlugin, TimeGridPlugin, InteractionPlugin],
-  initialView: "dayGridMonth",
+  initialView: 'dayGridMonth',
   selectable: true,
   selectMirror: true,
   events: voteEvents.value,
   headerToolbar: {
-    left: "prev",
-    center: "title",
-    right: "next",
+    left: 'prev',
+    center: 'title',
+    right: 'next',
   },
-  height: "auto",
+  height: 'auto',
   expandRows: true,
 
   dateClick: async(info) => {
@@ -139,14 +139,14 @@ const calendarOptions = ref({
 
 const formatDate = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
 
 const toggleCreateMode = async() => {
   if (!isCreatingVote.value) {
-    await $alert("투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)");
+    await $alert('투표를 생성할 날짜를 선택해주세요.(투표 시작날부터 마감날까지 드래그하여 선택 가능)');
   }
   isCreatingVote.value = !isCreatingVote.value;
 };
