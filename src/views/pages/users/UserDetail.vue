@@ -226,7 +226,7 @@ const loadInfo = async() => {
     mobile.value = autoMobileHyphen(memberDetail.value.mobile);
     birth.value = replaceBirthHyphen(memberDetail.value.birth);
     createdAt.value = convertDateOnlyDay(memberDetail.value.createdAt);
-    address.value = memberDetail.value.cityName + " " + memberDetail.value.districtName;
+    address.value = `${memberDetail.value.cityName} ${memberDetail.value.districtName}`;
   }
 }
 

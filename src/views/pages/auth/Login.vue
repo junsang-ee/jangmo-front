@@ -137,7 +137,8 @@ const buttonText = computed(() => {
 });
 
 const mobileRules = [
-  v => valid('MOBILE', v) || "휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다."
+  v => valid('MOBILE', v) || 
+    `휴대전화번호는 '010'을 포함한 11자리의 숫자여야만 합니다.`
 ];
 
 const hideSignup = () => {
@@ -190,7 +191,6 @@ const memberLogin = async() => {
         password: password.value
       });
       await setUserDetail(result);
-      await $alert('회원 권한으로 정상 로그인 되었습니다.');
       router.replace({name: 'Dashboard'});
     }
   } catch(e) {
@@ -208,7 +208,6 @@ const mercenaryLogin = async() => {
         mercenaryCode: mercenaryCode.value
       });
       await setUserDetail(result);
-      await $alert('용병 권한으로 정상 로그인 되었습니다.');
       router.replace({name: 'Dashboard'});
     }
   } catch(e) {
