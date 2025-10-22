@@ -51,8 +51,11 @@ const vueAxios = {
       (error) => {
         $loading.setLoading(false);
         const { response } = error;
-        if (!response)
+        if (!response) {
+          router.replace({name: 'Login'});
           return Promise.reject(new Error('현재 서버 상태가 정상적이지 않습니다. 잠시후 다시 시도하세요.'));
+        }
+          
 
         if (!response.data)
           return Promise.reject(error);
